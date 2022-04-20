@@ -15,13 +15,9 @@
   <p>This is the landing page of <strong>mydomain</strong>.</p>
 
   <?php
-  try {
-    $result = (5 / 0);
-    echo "here";
-  } catch (Exception $e) {
-    echo $e->getMessage();;
-  }
-  echo "hel";
+
+  echo "hello";
+
   ?>
 </body>
 
