@@ -1,0 +1,248 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  background: #fff;
+  color: #182641;
+}
+
+.content {
+  margin: 0 auto;
+  width: 80%;
+}
+
+.headerText {
+  text-align: center;
+  font-size: 24px;
+  padding: 10px 0px;
+}
+
+.uploads {
+  border: 1px solid #dae2f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.uploads form {
+  display: flex;
+}
+
+.defaultInputImage {
+  display: none;
+}
+
+#btnBrowseFile,
+#btnUpload {
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid #edf1f8;
+  padding: 2px 6px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+#btnBrowseFile {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+#btnBrowseFile span,
+#btnUpload span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#uploadResult {
+  padding: 5px 8px 0px 10px;
+  overflow: hidden;
+}
+
+
+#uploadResult span {
+  display: inline-block;
+}
+
+.options {
+  display: flex
+}
+
+.currDir,
+.create {
+  border: 1px solid #dae2f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.cdHeader {
+  background: #ecf0f8;
+  padding: 60px 10px;
+  margin-left: -10px;
+}
+
+.cdText {
+  vertical-align: middle;
+}
+
+.currDir {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.create {
+  width: 60px;
+  transition: 0.4s;
+  overflow: hidden;
+  position: relative;
+}
+
+.create span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.createFile {
+  border-right: 1px solid #dae2f1;
+  padding-right: 3px;
+}
+
+#addForm input {
+  outline: none;
+  font-size: 14px;
+  padding: 2px 6px;
+}
+
+#addForm .addInput {
+  border: 1px solid #edf1f8;
+  width: 216px;
+  height: 15px;
+}
+
+#addForm .addSubmit {
+  border: 0px;
+  background: #ecf0f8;
+  height: 21px;
+  width: 76px;
+}
+
+#addForm .addSubmit:hover {
+  background: #b5c4e3;
+  cursor: pointer;
+}
+
+.feTable {
+  width: 100%;
+  border: 1px solid #dae2f1;
+}
+
+.feTable th,
+.feTable td {
+  padding: 3px 10px;
+  border-right: 1px solid #dae2f1;
+  border-bottom: 1px solid #dae2f1;
+}
+
+.feTable th:last-child,
+.feTable td:last-child,
+.feTable td:nth-child(3) {
+  border-right: none;
+}
+
+.feTable tr:last-child td {
+  border-bottom: none;
+}
+
+.icon {
+  height: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.iconCreate {
+  padding: 0px 3px;
+}
+
+.iconExt {
+  cursor: auto;
+  padding-right: 3px;
+}
+
+.iconDelete {
+  margin-right: 12px;
+}
+
+.iconDownload {
+  height: 18px;
+  margin-right: 12px;
+}
+
+.iconCross {
+  height: 10px;
+}
+
+.iconRightArrow {
+  height: 22px;
+  position: absolute;
+  right: 0px;
+  top: -9px;
+  padding: 20px 3px;
+  background: #ecf0f8;
+}
+
+.dir {
+  color: #182641;
+}
+
+.dir:hover {
+  text-decoration: underline;
+}
+
+.sortByName,
+.sortBySize {
+  cursor: pointer;
+  position: relative;
+}
+
+.iconSort {
+  height: 20px;
+  position: absolute;
+  right: 5px;
+}
+
+.batch {
+  height: 30%;
+  width: 30px;
+  border: 1px solid #dae2f1;
+  padding: 10px;
+  overflow: hidden;
+  top: 30%;
+  left: -52px;
+  position: fixed;
+  transition: 0.3s;
+  display: grid;
+  justify-items: center;
+  grid-auto-rows: 35px;
+  grid-row-gap: 5px;
+  align-items: center;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.batch span {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dae2f1;
+}
+
+#rename {
+  outline: none;
+  padding: 3px 6px;
+  border: 1px solid #edf1f8;
+  width: 78%;
+  margin-bottom: 10px;
+}

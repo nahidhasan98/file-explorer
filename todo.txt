@@ -1,0 +1,4 @@
+- multiple files delete
+- rename file
+- copy/paste
+- cut/paste
