@@ -1,0 +1,19 @@
+- [x] List all files/directories
+- [x] Upload a file
+- [x] Delete a file
+- [x] Create file/directory
+- [x] Switch a directory
+- [x] Download file
+- [x] Sorting (by name, by size)
+- [x] Select/unselect option for file
+- [ ] Select/unselect all files with one button
+- [x] Multiple(marked) file download as zip format
+- [x] Multiple(marked) file delete
+- [x] Rename a file/folder
+- [ ] copy/paste
+- [ ] cut/paste
+- [ ] viewing layout (list/grid)
+- [ ] preview file
+- [ ] change permission of a file/directory
+- [ ] recycle bin
+- [ ] viewing file/folder details

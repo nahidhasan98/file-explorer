@@ -231,12 +231,12 @@ $(document).ready(function () {
         console.log(checkboxes);
         if (checkboxes.length > 0) {
             $(".batch").css("left", "0");
-            $(".iconDelete, .iconDownload").css("opacity", "0.6");
-            $(".iconDelete, .iconDownload").css("pointer-events", "none");
+            $(".iconDelete, .iconDownload, .iconRename").css("opacity", "0.6");
+            $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "none");
         } else {
             $(".batch").css("left", "-52px");
-            $(".iconDelete, .iconDownload").css("opacity", "");
-            $(".iconDelete, .iconDownload").css("pointer-events", "");
+            $(".iconDelete, .iconDownload, .iconRename").css("opacity", "");
+            $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "");
         }
     });
 
