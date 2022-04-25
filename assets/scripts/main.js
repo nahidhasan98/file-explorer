@@ -8,19 +8,38 @@ let currentOngoingRequest = false;
 let checkboxes = [];
 
 $(document).ready(function () {
-    $(".createFile").on("click", function () {
-        $(".createFile img").css("background", "#79a0ed");
-        $(".createDir img").css("background", "");
-        initCreate("file");
+    $(".iconSearch").on("click", function () {
+        hideAllOps();
+        $(".search").css("top", "10px");
+        $(".optionsIcon .iconSearch").css({ "background": "#dae2f1" });
+        $(".search input").focus();
     });
 
-    $(".createDir").on("click", function () {
-        $(".createDir img").css("background", "#79a0ed");
-        $(".createFile img").css("background", "");
-        initCreate("directory");
+    $(".iconCreateFile").on("click", function () {
+        hideAllOps();
+        $(".create").css("top", "10px");
+        $(".iconCreateFile").css({ "background": "#dae2f1" });
+        $(".fileType").val("file");
+        $(".addInput").attr("placeholder", "Enter file name");
+        $(".addInput").focus();
     });
 
-    $("#addForm").on('submit', function (e) {
+    $(".iconCreateDir").on("click", function () {
+        hideAllOps();
+        $(".create").css("top", "10px");
+        $(".iconCreateDir").css({ "background": "#dae2f1" });
+        $(".fileType").val("directory");
+        $(".addInput").attr("placeholder", "Enter directory name");
+        $(".addInput").focus();
+    });
+
+    $(".iconUpload").on("click", function () {
+        hideAllOps();
+        $(".uploads").css("top", "10px");
+        $(".optionsIcon .iconUpload").css({ "background": "#dae2f1" });
+    });
+
+    $("#createForm").on('submit', function (e) {
         e.preventDefault();
         let currDir = $(".currDir .cdText").text().trim();
 
@@ -29,9 +48,9 @@ $(document).ready(function () {
             return false;
         }
 
-        let formData = $("#addForm").serializeArray();
+        let formData = $("#createForm").serializeArray();
         formData.push({ name: 'currDir', value: currDir });
-        formData.find(function (input) { return input.name == 'create'; }).value = $(".addInput").val().trim(); // overwrite cause we need trim
+        formData.find(function (input) { return input.name == 'create'; }).value = $(".addInput").val().trim(); // overwrite cause we need to trim
 
         createFileOrDir(formData);
         return false;
@@ -95,7 +114,7 @@ $(document).ready(function () {
         else
             $("#btnBrowseFile span").text("Selected file: " + selectedFileName);
 
-        hideFileError();
+        hideUploadResult();
     });
 
     $('#btnUpload').on("click", function () {
@@ -132,14 +151,6 @@ $(document).ready(function () {
         $('.btnNewName, .btnReplace, .btnCancelReplace').css('pointer-events', "none");
 
         uploadFile(currDir, files, customName, "custom");
-    });
-
-    $(".iconRightArrow").on("click", function () {
-        $(".create").css("width", "60px");
-        $(".formSpan").css("display", "none");
-        $(".iconRightArrow").css("display", "none");
-        $(".createFile img").css("background", "");
-        $(".createDir img").css("background", "");
     });
 
     $("body").on("click", ".iconDownload", function () {
@@ -249,16 +260,9 @@ $(document).ready(function () {
     });
 });
 
-function initCreate(what) {
-    $("#fileType").val(what);
-    $(".create").css("width", "400px");
-    setTimeout(function () {
-        $(".formSpan").css("display", "");
-        $(".addInput").attr("placeholder", "Enter " + what + " name");
-        $(".addInput").focus();
-        $(".iconRightArrow").css("display", "");
-    }, 375);
-
+function hideAllOps() {
+    $(".search, .create, .uploads").css("top", "-38px");
+    $(".iconSearch, .iconCreateFile, .iconCreateDir, .iconUpload").css("background", "");
 }
 
 function createFileOrDir(formData) {
@@ -408,7 +412,7 @@ function uploadFile(currDir, files, customName, replaceType) {
         console.log(response);
     });
 
-    if (isExist && replaceType == "false") {
+    if (isExist && (replaceType == "false" || replaceType == "custom")) {
         // open interactive modal
         displayUploadModal();
         console.log(currentOngoingRequest);
@@ -516,10 +520,13 @@ function addNewRow(res) {
     }
 
     // delete icon
-    row += `<td><span><img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete"></span>`;
+    row += `<td><img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">`;
 
     // download icon
-    if (!res.isDir) row += `<span><img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload"></span></td></tr>`;
+    if (!res.isDir) row += `<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">`;
+
+    // rename icon
+    if (res.fileName != "..") row += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename"></td></tr>';
 
     $(".feTable").append(row);
 }
@@ -559,10 +566,12 @@ function displayUploadResult(imgSrc, errText, color) {
     $("#uploadResult img").attr("src", imgSrc);
     $("#uploadResult span").text(errText);
     $("#uploadResult span").css("color", color);
+    $(".optionsOps").css("height", "56px");
 }
 
-function hideFileError() {
+function hideUploadResult() {
     $("#uploadResult").css("display", "none");
+    $(".optionsOps").css("height", "38px");
 }
 
 function notify(message, time, bgColor) {

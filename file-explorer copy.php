@@ -34,30 +34,15 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
     <div class="content">
         <h2 class="headerText">File Explorer</h2>
 
-        <div class="options">
-            <!-- options icon -->
+        <div class="options" style="height: 100px;">
             <div class="optionsIcon">
-                <span><img src="./assets/images/search.png" alt="" srcset="" title="Search" class="icon iconSearch" style="background: #dae2f1"></span>
-                <span><img src="./assets/images/createFile.png" alt="" srcset="" title="Create File" class="icon iconCreateFile"></span>
-                <span><img src="./assets/images/createDir.png" alt="" srcset="" title="Create Directory" class="icon iconCreateDir"></span>
-                <span><img src="./assets/images/upload.png" alt="" srcset="" title="Upload" class="icon iconUpload"></span>
+                <img src="./assets/images/search.png" alt="" srcset="" title="Search" class="icon iconSearch">
+                <img src="./assets/images/createFile.png" alt="" srcset="" title="Create File" class="icon iconCreate">
+                <img src="./assets/images/createDir.png" alt="" srcset="" title="Create Directory" class="icon iconCreate">
+                <img src="./assets/images/upload.png" alt="" srcset="" title="Upload" class="icon iconUpload">
             </div>
-            <!-- options operration div -->
+            <!-- uploads -->
             <div class="optionsOps">
-                <!-- serach -->
-                <div class="search" style="top: 10px; display: flex;">
-                    <span><img src="./assets/images/search.png" alt="" srcset="" title="Search" class="icon iconSearch"></span>
-                    <input type="text" name="searchKey" id="searchKey" placeholder="Start typing to search file">
-                </div>
-                <!-- create File / Dir -->
-                <div class="create">
-                    <form action="" method="POST" id="createForm">
-                        <input type="text" name="create" class="addInput" required>
-                        <input type="text" name="fileType" class="fileType" required style="display: none;">
-                        <input type="submit" value="Create" name="submit" class="addSubmit">
-                    </form>
-                </div>
-                <!-- uploads -->
                 <div class="uploads">
                     <form action="" method="POST" enctype="multipart/form-data" id="uploadForm">
                         <input type="file" name="fileToUpload" id="fileToUpload" class="defaultInputImage">
@@ -78,6 +63,17 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
                 </div>
             </div>
         </div>
+
+        <!-- <div class="create">
+            <span style="display: none;" class="formSpan">
+                <form action="" method="POST" id="addForm">
+                    <input type="text" name="create" class="addInput" required>
+                    <input type="text" name="fileType" id="fileType" required style="display: none;">
+                    <input type="submit" value="Create" name="submit" class="addSubmit">
+                </form>
+            </span>
+            <img src="./assets/images/rightArrow.png" alt="" class="icon iconRightArrow" style="display: none;">
+        </div> -->
 
         <!-- You are here -->
         <div class="currDir">
