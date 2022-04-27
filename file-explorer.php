@@ -88,7 +88,9 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
         <!-- table -->
         <table class="feTable">
             <tr>
-                <th style="width: 3%;"></th>
+                <th style="width: 3%;">
+                    <input type="checkbox" class="checkbox" id="checkboxMaster">
+                </th>
                 <th class="sortByName">
                     Name
                     <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="nameUp" style="display: none;">
@@ -114,7 +116,7 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
 
                 // check box
                 if ($myFile->isDir()) echo '<td></td>';
-                else echo '<td><input type="checkbox" class="checkbox"></td>';
+                else echo '<td><input type="checkbox" class="checkboxSingle"></td>';
 
                 // file icon
                 echo '<td><img src="' . $iconLink . '" alt="" srcset="" class="icon iconExt">';
@@ -168,7 +170,7 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
                 </p>
                 <div>
                     <button type="button" class="btnMain btnCancel btnCancelNewName">Cancel</button>
-                    <input type="submit" value="New Name" class="btnMain btnNewName">
+                    <input type="submit" value="Upload with New Name" class="btnMain btnNewName">
                 </div>
             </div>
         </div>

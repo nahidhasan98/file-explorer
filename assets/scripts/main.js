@@ -6,6 +6,7 @@ let sortByNameAsc = false;
 let sortBySizeAsc = false;
 let currentOngoingRequest = false;
 let checkboxes = [];
+let totalSelectableItems = getSelectableItemsNumber();
 
 $(document).ready(function () {
     $(".iconSearch").on("click", function () {
@@ -223,7 +224,7 @@ $(document).ready(function () {
         }
     });
 
-    $("body").on("click", ".checkbox", function () {
+    $("body").on("click", ".checkboxSingle", function () {
         let currRow = $(this).closest("tr");
         let currRowSerial = currRow.attr("id");
         let fileName = currRow.find("td:eq(1)").text().trim();
@@ -232,12 +233,40 @@ $(document).ready(function () {
 
         let item = { id: currRowSerial, filePath: filePath };
 
-        if ($(this).is(":checked")) checkboxes.push(item);
-        else {
+        if ($(this).is(":checked")) {
+            let iconLink = currRow.find("td:eq(1) img").attr("src");
+            console.log(iconLink);
+            console.log(iconLink.endsWith("dir.png"));
+
+            checkboxes.push(item);
+        } else {
             checkboxes = checkboxes.filter(function (checkboxes) {
                 return checkboxes.filePath != filePath;
             });
         }
+
+        console.log(checkboxes);
+
+        if (checkboxes.length > 0) {
+            $(".batch").css("left", "0");
+            $(".iconDelete, .iconDownload, .iconRename").css("opacity", "0.6");
+            $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "none");
+        } else {
+            $(".batch").css("left", "-52px");
+            $(".iconDelete, .iconDownload, .iconRename").css("opacity", "");
+            $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "");
+        }
+
+        // taking care of master checkbox
+        if (checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
+        else $("#checkboxMaster").prop('checked', false);
+    });
+
+    $("body").on("click", "#checkboxMaster", function () {
+        let isSelected = $(this).is(":checked");
+
+        if (isSelected) selectAllItems();
+        else unSelectAllItems();
 
         console.log(checkboxes);
         if (checkboxes.length > 0) {
@@ -263,6 +292,31 @@ $(document).ready(function () {
 function hideAllOps() {
     $(".search, .create, .uploads").css("top", "-38px");
     $(".iconSearch, .iconCreateFile, .iconCreateDir, .iconUpload").css("background", "");
+}
+
+function selectAllItems() {
+    checkboxes = [];
+    let currDir = $(".currDir .cdText").text().trim();
+
+    $(".feTable tr").each(function () {
+        let iconLink = $(this).find("td:eq(1) img").attr("src");
+        if (typeof iconLink == "string" && (!iconLink.endsWith("dir.png") && !iconLink.endsWith("return.png"))) {
+            let currRowSerial = $(this).attr("id");
+            let fileName = $(this).find("td:eq(1)").text().trim();
+            let filePath = currDir + "/" + fileName;
+            let item = { id: currRowSerial, filePath: filePath };
+
+            $(this).find("td:eq(0) input").prop('checked', true);
+            checkboxes.push(item);
+        }
+    });
+}
+
+function unSelectAllItems() {
+    $(".feTable tr").each(function () {
+        $(this).find("td:eq(0) input").prop('checked', false);
+    });
+    checkboxes = [];
 }
 
 function createFileOrDir(formData) {
@@ -501,7 +555,7 @@ function addNewRow(res) {
 
     // check box
     if (res.isDir) row += '<td></td>';
-    else row += '<td><input type="checkbox" class="checkbox"></td>';
+    else row += '<td><input type="checkbox" class="checkboxSingle"></td>';
 
     // file icon
     row += '<td><img src="' + res.fileIcon + '" alt="" srcset="" class="icon iconExt">';
@@ -784,4 +838,16 @@ function renameFile(currDir, rowSerial) {
         $('.btnRename').css('pointer-events', "");
         $('.btnRename').val("Rename");
     });
+}
+
+function getSelectableItemsNumber() {
+    let counter = 0;
+    $(".feTable tr").each(function () {
+        let iconLink = $(this).find("td:eq(1) img").attr("src");
+        if (typeof iconLink == "string" && (!iconLink.endsWith("dir.png") && !iconLink.endsWith("return.png"))) {
+            counter++;
+        }
+    });
+    console.log(counter);
+    return counter;
 }
