@@ -164,7 +164,7 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
                 </p>
                 <div>
                     <button type="button" class="btnMain btnCancel btnCancelNewName">Cancel</button>
-                    <input type="submit" value="New Name" class="btnMain btnNewName">
+                    <input type="submit" value="Upload with New Name" class="btnMain btnNewName">
                 </div>
             </div>
         </div>

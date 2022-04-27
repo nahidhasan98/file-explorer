@@ -20,4 +20,4 @@ Fetures:
 - [ ] preview file
 - [ ] change permission of a file/directory
 - [ ] recycle bin
-- [ ] viewing file/folder details
+- [ ] viewing file/folder details/properties

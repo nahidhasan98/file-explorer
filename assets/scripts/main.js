@@ -97,7 +97,7 @@ $(document).ready(function () {
         } else hideUploadModal();
 
         $(".btnReplace").val("Replace");
-        $(".btnNewName").val("New Name");
+        $(".btnNewName").val("Upload with New Name");
         $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css("opacity", "");
         $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css('pointer-events', "");
     });
@@ -391,34 +391,35 @@ function uploadFile(currDir, files, customName, replaceType) {
     $('#btnUpload span').text("Uploading...");
 
     // first checking if file already exist or not
-    let isExist = false;
-    let responseFileName, url;
-    if (replaceType == "true" && customName != "") url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + customName;
-    else url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + file.name;
+    let isExist = false, responseFileName;
+    if (replaceType != "true") { // if replaceType is true, should replace(no need to check for existance)
+        let url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + file.name;;
+        if (customName != "") url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + customName;
 
-    $.ajax({
-        async: false,
-        type: "GET",
-        url: url,
-        dataType: "json",
-    }).done(function (response) {
-        console.log(response);
-        if (response.status == "success" && response.message == true) {
-            responseFileName = response.fileName;
-            isExist = true;
-        }
-    }).fail(function (response) {
-        console.log("something went wrong");
-        console.log(response);
-    });
+        $.ajax({
+            async: false,
+            type: "GET",
+            url: url,
+            dataType: "json",
+        }).done(function (response) {
+            console.log(response);
+            if (response.status == "success" && response.message == true) {
+                responseFileName = response.fileName;
+                isExist = true;
+            }
+        }).fail(function (response) {
+            console.log("something went wrong");
+            console.log(response);
+        });
+    }
 
-    if (isExist && (replaceType == "false" || replaceType == "custom")) {
+    if (isExist) {
         // open interactive modal
         displayUploadModal();
         console.log(currentOngoingRequest);
 
         $(".btnReplace").val("Replace");
-        $(".btnNewName").val("New Name");
+        $(".btnNewName").val("Upload with New Name");
         $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css("opacity", "");
         $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css('pointer-events', "");
 
