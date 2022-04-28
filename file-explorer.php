@@ -41,6 +41,9 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
                 <span><img src="./assets/images/createFile.png" alt="" srcset="" title="Create File" class="icon iconCreateFile"></span>
                 <span><img src="./assets/images/createDir.png" alt="" srcset="" title="Create Directory" class="icon iconCreateDir"></span>
                 <span><img src="./assets/images/upload.png" alt="" srcset="" title="Upload" class="icon iconUpload"></span>
+                <div class="opsIconRight">
+                    <span><img src="./assets/images/grid.png" alt="" srcset="" title="Upload" class="icon iconGrid"></span>
+                </div>
             </div>
             <!-- options operration div -->
             <div class="optionsOps">
@@ -150,6 +153,34 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
             }
             ?>
         </table>
+
+        <!-- grid -->
+        <div id="grid" style="display: none;">
+            <?php
+            $id = 0;
+            foreach ($myFilesSorted as $myFile) {
+                if ($myFile->name == ".") continue;
+
+                $iconLink = getExtensionIconPath($myFile->getExtension());
+
+                echo '<div class="fileCard">
+                <div class="cardIcon" style="position: relative;">';
+
+                // check box
+                if (!$myFile->isDir()) {
+                    echo '<input type="checkbox" class="checkboxSingle" style="position: absolute;top:10px;left:10px;">';
+                }
+
+                echo '<img src = "' . $iconLink . '" alt="" srcset="" style="height:120px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
+
+                // file name with link
+                if ($myFile->isDir()) echo '<p class="fileName" style="font-size: 16px; text-align:center;"><a href="' . getDirLink($myFile) . '">' . $myFile->name . '</a></p></div></div>';
+                else echo '<p class="fileName" style="font-size: 16px; text-align:center;">' . $myFile->name . '</p>
+                <p class="fileSize" style="font-size: 14px; text-align:center;">' . $myFile->getFormattedSize()["size"] . ' ' . $myFile->getFormattedSize()["unit"] . '</p>
+                </div></div>';
+            }
+            ?>
+        </div>
 
         <!-- notification snackbar -->
         <div id="snackbar">Some notification text..</div>
