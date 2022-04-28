@@ -59,6 +59,11 @@ body {
   padding-left: 0px;
 }
 
+.optionsIcon span:last-child {
+  padding-right: 0px;
+  border-right: 0;
+}
+
 .optionsIcon img {
   padding: 3px 6px;
   border-radius: 2px;
@@ -278,4 +283,21 @@ body {
   border: 1px solid #edf1f8;
   width: 78%;
   margin-bottom: 10px;
+}
+
+/* grid view */
+#grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 180px);
+  grid-gap: 30px;
+  transition: 0.5s;
+}
+
+.fileCard {
+  height: 180px;
+  border: 1px solid #dae2f1;
+}
+
+.opsIconRight {
+  float: right;
 }
