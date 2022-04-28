@@ -2,7 +2,7 @@ console.log("scripts connected successfully");
 
 const colorSuccess = "#00b359";
 const colorError = "#ff4d4d";
-let sortByNameAsc = false;
+let sortByNameAsc = true;
 let sortBySizeAsc = false;
 let currentOngoingRequest = false;
 let checkboxes = [];

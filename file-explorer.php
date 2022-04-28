@@ -94,7 +94,7 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
                 <th class="sortByName">
                     Name
                     <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="nameUp" style="display: none;">
-                    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="nameDown" style="display: none;">
+                    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="nameDown" style="">
                 </th>
                 <th colspan="2" style="width: 12%;" class="sortBySize">
                     Size
