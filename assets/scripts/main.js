@@ -706,11 +706,11 @@ function getFinalDirIdx(table) {
     let tbody = table.find('tbody');
     let totalRows = tbody.find('tr').length;
 
-    let startIdx = 3;
+    let startIdx = 3; // 1->heading-tr, 2->return-tr, 3->starting directory-tr
 
-    for (let i = 3; i <= totalRows; i++) { // tr 1-indexed
-        let txt = tbody.find('tr:nth-child(' + i + ')').find('td:nth-child(5)').find('span:nth-child(2)').html();
-        if (txt != undefined) {
+    for (let i = startIdx; i <= totalRows; i++) { // tr 1-indexed
+        let iconLink = tbody.find('tr:nth-child(' + i + ')').find('td:nth-child(2)').find("img").attr("src");
+        if (!iconLink.endsWith("dir.png")) {    // started file tr/row
             startIdx = i - 1;
             break;
         }
@@ -762,7 +762,6 @@ function sortBySize(table, isAsc) {
 
     // file sorting
     tbody.find('tr:gt(1)tr:lt(' + (totalRows - rangeIdx - 2) + ')').sort(function (a, b) {
-        // tbody.find('tr:gt(1)').sort(function (a, b) {
         let aSize, bSize;
 
         if ($('td:nth-child(4)', a).text() == "bytes") aSize = 1.0;
@@ -775,14 +774,11 @@ function sortBySize(table, isAsc) {
         else if ($('td:nth-child(4)', b).text() == "MB") bSize = 1024.0 * 1024.0;
         else if ($('td:nth-child(4)', b).text() == "GB") bSize = 1024.0 * 1024.0 * 1024.0;
 
-
         if (isAsc) {
             // sort by size then name
-            return (($('td:nth-child(3)', a).text() * aSize) - ($('td:nth-child(3)', b).text() * bSize))
-                || ($('td:nth-child(2)', a).text().localeCompare($('td:nth-child(2)', b).text()));
+            return (($('td:nth-child(3)', a).text() * aSize) - ($('td:nth-child(3)', b).text() * bSize));
         } else {
-            return (($('td:nth-child(3)', b).text() * bSize) - ($('td:nth-child(3)', a).text() * aSize))
-                || ($('td:nth-child(2)', b).text().localeCompare($('td:nth-child(2)', a).text()));
+            return (($('td:nth-child(3)', b).text() * bSize) - ($('td:nth-child(3)', a).text() * aSize));
         }
     }).appendTo(tbody);
 }
@@ -848,6 +844,5 @@ function getSelectableItemsNumber() {
             counter++;
         }
     });
-    console.log(counter);
     return counter;
 }
