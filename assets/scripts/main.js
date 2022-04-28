@@ -7,8 +7,23 @@ let sortBySizeAsc = false;
 let currentOngoingRequest = false;
 let checkboxes = [];
 let totalSelectableItems = getSelectableItemsNumber();
+let listView = true;
 
 $(document).ready(function () {
+    $(".iconGrid").on("click", function () {
+        if (listView) {
+            $(".feTable").css("display", "none");
+            $("#grid").css("display", "");
+            $(".iconGrid").css("background", "#dae2f1");
+            listView = false;
+        } else {
+            $(".feTable").css("display", "");
+            $("#grid").css("display", "none");
+            $(".iconGrid").css("background", "");
+            listView = true;
+        }
+    });
+
     $(".iconSearch").on("click", function () {
         hideAllOps();
         $(".search").css("top", "10px");
