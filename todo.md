@@ -9,7 +9,7 @@ Fetures:
 - [x] Download file
 - [x] Sorting (by name, by size)
 - [x] Select/unselect option for file
-- [ ] Select/unselect all files with one button
+- [x] Select/unselect all files with one button
 - [x] Multiple(marked) file download as zip format
 - [x] Multiple(marked) file delete
 - [x] Rename a file/folder
