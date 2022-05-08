@@ -109,7 +109,7 @@ function getDirLink($file)
 {
     // root/..                  // root/abc                 // .php?dir=other
     // root/other/..            // root/other/abc           // .php?dir=other/
-    // root/other/anoter/..     // root/other/anoter/abc    // .php?dir=other/anoter
+    // root/other/another/..     // root/other/another/abc    // .php?dir=other/another
 
     if ($file->name != "..") {
         // if a directory (not /..)

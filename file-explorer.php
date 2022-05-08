@@ -1,17 +1,3 @@
-<?php
-
-// including required file
-include "./common.php";
-include "./MyFile.php";
-
-$dir = rootDir;
-if (isset($_GET['dir']) && $_GET['dir'] != "") $dir = rootDir . DIRECTORY_SEPARATOR . $_GET['dir'];
-
-$fileNames = scandir($dir);
-$myFilesSorted = organizeFiles($dir, $fileNames);
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +17,7 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
 </head>
 
 <body>
-    <div class="content">
+    <div class="container">
         <h2 class="headerText">File Explorer</h2>
 
         <div class="options">
@@ -85,102 +71,11 @@ $myFilesSorted = organizeFiles($dir, $fileNames);
         <!-- You are here -->
         <div class="currDir">
             <span class="cdHeader">You are here:</span>
-            <span class="cdText"><?php echo "/" . str_replace(rootDir, "root", $dir); ?></span>
+            <span class="cdText">/</span>
         </div>
 
-        <!-- table -->
-        <table class="feTable">
-            <tr>
-                <th style="width: 3%;">
-                    <input type="checkbox" class="checkbox" id="checkboxMaster">
-                </th>
-                <th class="sortByName">
-                    Name
-                    <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="nameUp" style="display: none;">
-                    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="nameDown">
-                </th>
-                <th colspan="2" style="width: 12%;" class="sortBySize">
-                    Size
-                    <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="sizeUp" style="display: none;">
-                    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="sizeDown" style="display: none;">
-                </th>
-                <th style="width: 15%;">Options</th>
-            </tr>
-
-            <?php
-
-            $id = 0;
-            foreach ($myFilesSorted as $myFile) {
-                if ($myFile->name == ".") continue;
-
-                $iconLink = getExtensionIconPath($myFile->getExtension());
-
-                echo '<tr id="' . ++$id . '">';
-
-                // check box
-                if ($myFile->isDir()) echo '<td></td>';
-                else echo '<td><input type="checkbox" class="checkboxSingle"></td>';
-
-                // file icon
-                echo '<td><img src="' . $iconLink . '" alt="" srcset="" class="icon iconExt">';
-
-                // file name with link
-                if ($myFile->isDir()) echo '<a href="' . getDirLink($myFile) . '" class="dir">' . $myFile->name . '</a>';
-                else echo '<span class="file">' . $myFile->name . '</span></td>';
-
-                // file size
-                if ($myFile->isDir()) {
-                    echo '<td colspan="2" style="border-right: 1px solid #dae2f1;">Folder</td>';
-                } else {
-                    echo "<td>" . $myFile->getFormattedSize()["size"] . "</td>";
-                    echo "<td>" . $myFile->getFormattedSize()["unit"] . "</td>";
-                }
-
-                // delete icon
-                echo '<td>';
-                if ($myFile->name != "..")
-                    echo '<img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">';
-
-                // download icon
-                if (!$myFile->isDir())
-                    echo '<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">';
-
-                // rename icon
-                if ($myFile->name != "..")
-                    echo '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename">';
-
-                echo '</td></tr>';
-            }
-            ?>
-        </table>
-
-        <!-- grid -->
-        <div id="grid" style="display: none;">
-            <?php
-            $id = 0;
-            foreach ($myFilesSorted as $myFile) {
-                if ($myFile->name == ".") continue;
-
-                $iconLink = getExtensionIconPath($myFile->getExtension());
-
-                echo '<div class="fileCard">
-                <div class="cardIcon" style="position: relative;">';
-
-                // check box
-                if (!$myFile->isDir()) {
-                    echo '<input type="checkbox" class="checkboxSingle" style="position: absolute;top:10px;left:10px;">';
-                }
-
-                echo '<img src = "' . $iconLink . '" alt="" srcset="" style="height:120px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
-
-                // file name with link
-                if ($myFile->isDir()) echo '<p class="fileName" style="font-size: 16px; text-align:center;"><a href="' . getDirLink($myFile) . '">' . $myFile->name . '</a></p></div></div>';
-                else echo '<p class="fileName" style="font-size: 16px; text-align:center;">' . $myFile->name . '</p>
-                <p class="fileSize" style="font-size: 14px; text-align:center;">' . $myFile->getFormattedSize()["size"] . ' ' . $myFile->getFormattedSize()["unit"] . '</p>
-                </div></div>';
-            }
-            ?>
-        </div>
+        <!-- displaying files -->
+        <div class="content"></div>
 
         <!-- notification snackbar -->
         <div id="snackbar">Some notification text..</div>

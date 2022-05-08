@@ -6,21 +6,24 @@ let sortByNameAsc = true;
 let sortBySizeAsc = false;
 let currentOngoingRequest = false;
 let checkboxes = [];
-let totalSelectableItems = getSelectableItemsNumber();
-let listView = true;
+let totalSelectableItems = 0;
+let fileList = [];
 
 $(document).ready(function () {
+    let currView = sessionStorage.getItem("viewStyle");
+    getAndDisplayFileList(currView);
+
     $(".iconGrid").on("click", function () {
-        if (listView) {
-            $(".feTable").css("display", "none");
-            $("#grid").css("display", "");
-            $(".iconGrid").css("background", "#dae2f1");
-            listView = false;
-        } else {
-            $(".feTable").css("display", "");
-            $("#grid").css("display", "none");
+        let currView = sessionStorage.getItem("viewStyle");
+
+        if (currView == "grid") {
+            displayFileList("list");
+            sessionStorage.setItem("viewStyle", "list");
             $(".iconGrid").css("background", "");
-            listView = true;
+        } else {
+            displayFileList("grid");
+            sessionStorage.setItem("viewStyle", "grid");
+            $(".iconGrid").css("background", "#dae2f1");
         }
     });
 
@@ -205,7 +208,7 @@ $(document).ready(function () {
         return false;
     });
 
-    $(".sortByName").on("click", function () {
+    $("body").on("click", ".sortByName", function () {
         sortByName($('.feTable'), !sortByNameAsc);
         sortByNameAsc = !sortByNameAsc;
 
@@ -222,7 +225,7 @@ $(document).ready(function () {
         }
     });
 
-    $(".sortBySize").on("click", function () {
+    $("body").on("click", ".sortBySize", function () {
         sortBySize($('.feTable'), !sortBySizeAsc);
         sortBySizeAsc = !sortBySizeAsc;
 
@@ -351,7 +354,10 @@ function createFileOrDir(formData) {
         if (response.status == "success") {
             $(".addInput").val("");
             notify(response.message, 3, colorSuccess);
-            addNewRow(response);
+
+            // refreshing file list
+            let currView = sessionStorage.getItem("viewStyle");
+            getAndDisplayFileList(currView);
         } else {
             notify(response.message, 3, colorError);
         }
@@ -529,7 +535,12 @@ function uploadFile(currDir, files, customName, replaceType) {
                 notify("File uploaded successfully", 3, colorSuccess);
                 displayUploadResult("./assets/images/tick.png", response.message, colorSuccess)
 
-                if (replaceType != "true") addNewRow(response);
+                if (replaceType != "true") {
+                    // refreshing file list
+                    let currView = sessionStorage.getItem("viewStyle");
+                    getAndDisplayFileList(currView);
+                }
+
                 hideUploadModal();
             } else if (response.type == "duplicate") {
                 // open interactive modal
@@ -560,45 +571,6 @@ function uploadFile(currDir, files, customName, replaceType) {
         });
         currentOngoingRequest = request;
     }
-}
-
-function addNewRow(res) {
-    let lastSerial = $('tr:last').attr('id');
-    lastSerial++;
-
-    let row = '<tr id="' + lastSerial + '">';
-
-    // check box
-    if (res.isDir) row += '<td></td>';
-    else row += '<td><input type="checkbox" class="checkboxSingle"></td>';
-
-    // file icon
-    row += '<td><img src="' + res.fileIcon + '" alt="" srcset="" class="icon iconExt">';
-
-    // file name with link
-    if (res.isDir) {
-        row += '<a href="' + res.dirLink + '" class="dir">' + res.fileName + '</a>';
-    } else
-        row += '<span>' + res.fileName + '</span></td>';
-
-    // file size
-    if (res.isDir) {
-        row += '<td colspan="2" style="border-right: 1px solid #dae2f1;">Folder</td>';
-    } else {
-        row += '<td>' + res.size + '</td>';
-        row += '<td>' + res.sizeUnit + '</td>';
-    }
-
-    // delete icon
-    row += `<td><img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">`;
-
-    // download icon
-    if (!res.isDir) row += `<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">`;
-
-    // rename icon
-    if (res.fileName != "..") row += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename"></td></tr>';
-
-    $(".feTable").append(row);
 }
 
 function downloadFile(filePath) {
@@ -767,11 +739,9 @@ function sortBySize(table, isAsc) {
     // directory sorting
     tbody.find('tr:gt(1)tr:lt(' + rangeIdx + ')').sort(function (a, b) {
         if (isAsc) {
-            return ($('td:nth-child(3)', a).text() * 1) - ($('td:nth-child(3)', b).text() * 1)
-                || ($('td:nth-child(2)', a).text().localeCompare($('td:nth-child(2)', b).text()));
+            return ($('td:nth-child(3)', a).text() * 1) - ($('td:nth-child(3)', b).text() * 1);
         } else {
-            return ($('td:nth-child(3)', b).text() * 1) - ($('td:nth-child(3)', a).text() * 1)
-                || ($('td:nth-child(2)', b).text().localeCompare($('td:nth-child(2)', a).text()));
+            return ($('td:nth-child(3)', b).text() * 1) - ($('td:nth-child(3)', a).text() * 1);
         }
     }).appendTo(tbody);
 
@@ -853,11 +823,163 @@ function renameFile(currDir, rowSerial) {
 
 function getSelectableItemsNumber() {
     let counter = 0;
-    $(".feTable tr").each(function () {
-        let iconLink = $(this).find("td:eq(1) img").attr("src");
-        if (typeof iconLink == "string" && (!iconLink.endsWith("dir.png") && !iconLink.endsWith("return.png"))) {
-            counter++;
+    for (let i = 0; i < fileList.length; i++) {
+        if (!fileList[i].isDir) counter++;
+    }
+    return counter;
+}
+
+function defaultViewStyle() {
+    let currView = sessionStorage.getItem("viewStyle");
+
+    if (currView == "grid") {
+        $(".feTable").css("display", "none");
+        $("#grid").css("display", "");
+        $(".iconGrid").css("background", "#dae2f1");
+        sessionStorage.setItem("viewStyle", "grid");
+    } else {
+        $(".feTable").css("display", "");
+        $("#grid").css("display", "none");
+        $(".iconGrid").css("background", "");
+        sessionStorage.setItem("viewStyle", "list");
+    }
+}
+
+function getAndDisplayFileList(viewStyle) {
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let dir = urlParams.get('dir');
+
+    let apiURL = "/get-file-list.php";
+    if (dir != null) apiURL = "/get-file-list.php?dir=" + dir;
+
+    // sending ajax GET request
+    let request = $.ajax({
+        type: "GET",
+        url: apiURL,
+        dataType: "json",
+    });
+    request.done(function (response) {
+        // console.log(response);
+        if (response.status == "success") {
+            fileList = response.files;
+            displayFileList(viewStyle);
+            totalSelectableItems = getSelectableItemsNumber();
+            $(".cdText").text("/" + response.currDir);
+        } else {
+            $(".content").append('<p style="text-align: center;">' + response.message + '</p>');
         }
     });
-    return counter;
+    request.fail(function (response) {
+        console.log("something went wrong");
+        console.log(response);
+    });
+    request.always(function () {
+    });
+}
+
+function displayFileList(viewStyle) {
+    let data = "";
+
+    if (viewStyle == "grid") data = createDataForGridView();
+    else data = createDataForListView();
+
+    $(".content").empty();
+    $(".content").append(data);
+}
+
+function createDataForListView() {
+    // <!-- table -->
+    let data = `<table class="feTable">
+    <tr>
+    <th style="width: 3%;">
+    <input type="checkbox" class="checkbox" id="checkboxMaster">
+    </th>
+    <th class="sortByName">
+    Name
+    <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="nameUp" style="display: none;">
+    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="nameDown">
+    </th>
+    <th colspan="2" style="width: 12%;" class="sortBySize">
+    Size
+    <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="sizeUp" style="display: none;">
+    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="sizeDown" style="display: none;">
+    </th>
+    <th style="width: 15%;">Options</th>
+    </tr>`;
+
+    let id = 0;
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileName == ".") continue;
+
+        data += '<tr id="' + ++id + '">';
+
+        // check box
+        if (fileList[i].isDir) data += '<td></td>';
+        else data += '<td><input type="checkbox" class="checkboxSingle"></td>';
+
+        // file icon
+        if (fileList[i].isDir) data += '<td><a href="' + fileList[i].dirLink + '" class="dir"><img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt"></a>';
+        else data += '<td><img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt">';
+
+        // file name with link
+        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a>';
+        else data += '<span class="file">' + fileList[i].fileName + '</span></td>';
+
+        // file size
+        if (fileList[i].isDir) {
+            data += '<td colspan="2" style="border-right: 1px solid #dae2f1;">Folder</td>';
+        } else {
+            data += "<td>" + fileList[i].size + "</td>";
+            data += "<td>" + fileList[i].sizeUnit + "</td>";
+        }
+
+        // delete icon
+        data += '<td>';
+        if (fileList[i].fileName != "..")
+            data += '<img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">';
+
+        // download icon
+        if (!fileList[i].isDir)
+            data += '<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">';
+
+        // rename icon
+        if (fileList[i].fileName != "..")
+            data += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename">';
+
+        data += '</td></tr>';
+    }
+
+    data += '</table>';
+
+    return data;
+}
+
+function createDataForGridView() {
+    // <!-- grid -->
+    let data = `<div id="grid">`;
+
+    let id = 0;
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileName == ".") continue;
+
+        data += `<div class="fileCard">
+                <div class="cardIcon" style = "position: relative;">`;
+
+        // check box
+        if (!fileList[i].isDir) data += '<input type="checkbox" class="checkboxSingle" style="position: absolute; top:10px; left:10px;">';
+
+        // icon
+        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '"><img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:120px; display:block; margin: auto; padding:5px;"></div><div class="cardText"></a>';
+        else data += '<img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
+
+        // file name with link
+        if (fileList[i].isDir) data += '<p class="fileName"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div></div>';
+        else data += `<p class="fileName">` + fileList[i].fileName + `</p>
+            <p class="fileSize" style = "font-size: 14px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p></div></div>`;
+    }
+
+    data += '</div>';
+
+    return data;
 }
