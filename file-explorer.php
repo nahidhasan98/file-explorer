@@ -108,9 +108,7 @@
                 <span class="close">&times;</span>
                 <p class="text">Please confirm to delete!</p>
                 <div>
-                    <p id="currSerial" style="display: none;"></p>
-                    <p id="fileName" style="display: none;"></p>
-                    <p id="fromDir" style="display: none;"></p>
+                    <p id="filePath" style="display: none;"></p>
                     <button type="button" class="btnMain btnCancel">Cancel</button>
                     <input type="submit" value="Delete" class="btnMain btnDelete">
                 </div>

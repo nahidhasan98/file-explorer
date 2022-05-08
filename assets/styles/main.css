@@ -204,10 +204,6 @@ body {
   cursor: pointer;
 }
 
-/* .iconCreate {
-  padding: 0px 3px;
-} */
-
 .iconExt {
   padding-right: 3px;
 }
@@ -232,6 +228,10 @@ body {
   top: -9px;
   padding: 20px 3px;
   background: #ecf0f8;
+}
+
+.iconNoCursor {
+  cursor: auto;
 }
 
 .dir {
@@ -296,9 +296,16 @@ body {
 }
 
 .fileCard {
-  height: 180px;
+  height: 195px;
+  width: 185px;
   border: 1px solid #dae2f1;
   overflow: hidden;
+}
+
+.cardOps {
+  text-align: center;
+  padding: 5px 5px 10px 5px;
+  border-top: 1px solid #edf1f8;
 }
 
 .opsIconRight {
@@ -306,10 +313,8 @@ body {
 }
 
 .fileName {
-  font-size: 16px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 5px;
 }

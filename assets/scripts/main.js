@@ -76,22 +76,21 @@ $(document).ready(function () {
     });
 
     $("body").on("click", ".iconDelete", function () {
-        let currRow = $(this).closest("tr");
-        let currRowSerial = currRow.attr("id");
+        let currDir = $(".currDir .cdText").text().trim();
+        let fileName = $(this).parent().parent().find(".fileName").text().trim();
+        let filePath = currDir + "/" + fileName;
 
-        $("#currSerial").text(currRowSerial);
+        $("#filePath").text(filePath);
+        console.log(filePath);
         displayDeleteModal();
         // further process of delete will trigger from modal button clicked
     });
 
     $("body").on("click", ".btnDelete", function () {
         if (checkboxes.length == 0) {
-            let currRowSerial = $("#currSerial").text().trim();
-            let fileName = $("tr#" + currRowSerial).find("td:eq(1)").text().trim();
-            let currDir = $(".currDir .cdText").text().trim();
-            let filePath = currDir + "/" + fileName;
+            let filePath = $("#filePath").text().trim();
 
-            deleteFile(filePath, currRowSerial);
+            deleteFile(filePath);
         } else {
             deleteBatch();
         }
@@ -356,8 +355,7 @@ function createFileOrDir(formData) {
             notify(response.message, 3, colorSuccess);
 
             // refreshing file list
-            let currView = sessionStorage.getItem("viewStyle");
-            getAndDisplayFileList(currView);
+            refreshFileList();
         } else {
             notify(response.message, 3, colorError);
         }
@@ -373,7 +371,7 @@ function createFileOrDir(formData) {
     });
 }
 
-function deleteFile(filePath, rowSerial) {
+function deleteFile(filePath) {
     $('.btnDelete').css("opacity", ".7");
     $('.btnDelete').css('pointer-events', "none");
     $('.btnDelete').val("Deleting...");
@@ -391,8 +389,9 @@ function deleteFile(filePath, rowSerial) {
         console.log(response);
         if (response.status == "success") {
             notify(response.message, 3, colorSuccess);
-            // removing deleted row
-            $("tr#" + rowSerial).remove();
+
+            // refreshing file list
+            refreshFileList();
         } else {
             notify(response.message, 3, colorError);
         }
@@ -537,8 +536,7 @@ function uploadFile(currDir, files, customName, replaceType) {
 
                 if (replaceType != "true") {
                     // refreshing file list
-                    let currView = sessionStorage.getItem("viewStyle");
-                    getAndDisplayFileList(currView);
+                    refreshFileList();
                 }
 
                 hideUploadModal();
@@ -918,13 +916,18 @@ function createDataForListView() {
         if (fileList[i].isDir) data += '<td></td>';
         else data += '<td><input type="checkbox" class="checkboxSingle"></td>';
 
-        // file icon
-        if (fileList[i].isDir) data += '<td><a href="' + fileList[i].dirLink + '" class="dir"><img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt"></a>';
-        else data += '<td><img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt">';
+        // file icon & name with link
+        data += '<td>';
+        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '" class="dir">';
 
-        // file name with link
-        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a>';
-        else data += '<span class="file">' + fileList[i].fileName + '</span></td>';
+        data += '<img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt ';
+        if (!fileList[i].isDir) data += 'iconNoCursor';
+        data += '">';
+
+        data += '<span class="fileName">' + fileList[i].fileName + '</span>';
+
+        if (fileList[i].isDir) data += '</a>';
+        data += '</td>';
 
         // file size
         if (fileList[i].isDir) {
@@ -974,12 +977,36 @@ function createDataForGridView() {
         else data += '<img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
 
         // file name with link
-        if (fileList[i].isDir) data += '<p class="fileName"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div></div>';
-        else data += `<p class="fileName">` + fileList[i].fileName + `</p>
-            <p class="fileSize" style = "font-size: 14px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p></div></div>`;
+        if (fileList[i].isDir) data += '<p class="fileName" style="font-size:16px; padding: 5px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div>';
+        else data += `<p class="fileName" style="font-size:16px; padding: 5px;">` + fileList[i].fileName + `</p>
+            <p class="fileSize" style = "font-size: 14px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p></div>`;
+
+        // file ops
+        data += '<div class="cardOps">';
+
+        if (fileList[i].fileName != "..")
+            data += '<img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">';
+
+        // download icon
+        if (!fileList[i].isDir)
+            data += '<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">';
+
+        // rename icon
+        if (fileList[i].fileName != "..")
+            data += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename">';
+
+        data += '</div>';   // .cardOps div closing
+
+        data += '</div>';   // .fileCard div closing
     }
 
-    data += '</div>';
+    data += '</div>';   // #grid div closing
 
     return data;
+}
+
+function refreshFileList() {
+    // refreshing file list
+    let currView = sessionStorage.getItem("viewStyle");
+    getAndDisplayFileList(currView);
 }
