@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $unsuccessCounter = 0;
 
         foreach ($items as $item) {
-            $filePath = str_replace("/root", rootDir, $item->filePath);
+            $filePath = str_replace("/root", rootDir, $item);
             try {
                 $result = deleteFile($filePath);
                 $successCounter++;

@@ -237,23 +237,15 @@ $(document).ready(function () {
     });
 
     $("body").on("click", ".checkboxSingle", function () {
-        let currRow = $(this).closest("tr");
-        let currRowSerial = currRow.attr("id");
-        let fileName = currRow.find("td:eq(1)").text().trim();
         let currDir = $(".currDir .cdText").text().trim();
+        let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
 
-        let item = { id: currRowSerial, filePath: filePath };
-
         if ($(this).is(":checked")) {
-            let iconLink = currRow.find("td:eq(1) img").attr("src");
-            console.log(iconLink);
-            console.log(iconLink.endsWith("dir.png"));
-
-            checkboxes.push(item);
+            checkboxes.push(filePath);
         } else {
-            checkboxes = checkboxes.filter(function (checkboxes) {
-                return checkboxes.filePath != filePath;
+            checkboxes = $.grep(checkboxes, function (item) {
+                return item != filePath;
             });
         }
 
@@ -270,7 +262,7 @@ $(document).ready(function () {
         }
 
         // taking care of master checkbox
-        if (checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
+        if (checkboxes.length > 0 && checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
         else $("#checkboxMaster").prop('checked', false);
     });
 
@@ -313,13 +305,11 @@ function selectAllItems() {
     $(".feTable tr").each(function () {
         let iconLink = $(this).find("td:eq(1) img").attr("src");
         if (typeof iconLink == "string" && (!iconLink.endsWith("dir.png") && !iconLink.endsWith("return.png"))) {
-            let currRowSerial = $(this).attr("id");
             let fileName = $(this).find("td:eq(1)").text().trim();
             let filePath = currDir + "/" + fileName;
-            let item = { id: currRowSerial, filePath: filePath };
 
             $(this).find("td:eq(0) input").prop('checked', true);
-            checkboxes.push(item);
+            checkboxes.push(filePath);
         }
     });
 }
@@ -422,10 +412,7 @@ function deleteBatch() {
         console.log(response);
         if (response.status == "success") {
             notify(response.message, 3, colorSuccess);
-            // removing deleted row
-            for (let i = 0; i < checkboxes.length; i++) {
-                $("tr#" + checkboxes[i].id).remove();
-            }
+            refreshFileList();
             checkboxes = [];
             $(".batch").css("left", "-52px");
             $(".iconDelete, .iconDownload").css("opacity", "");
@@ -853,8 +840,8 @@ function getAndDisplayFileList(viewStyle) {
         // console.log(response);
         if (response.status == "success") {
             fileList = response.files;
-            displayFileList(viewStyle);
             totalSelectableItems = getSelectableItemsNumber();
+            displayFileList(viewStyle);
             $(".cdText").text("/" + response.currDir);
         } else {
             $(".content").append('<p style="text-align: center;">' + response.message + '</p>');
@@ -876,6 +863,21 @@ function displayFileList(viewStyle) {
 
     $(".content").empty();
     $(".content").append(data);
+
+    // taking care of selected checkboxes [useful in toggling list/grid]
+    let currDir = $(".currDir .cdText").text().trim();
+    $(".checkboxSingle").each(function () {
+        let fileName = $(this).parent().parent().find(".fileName").text().trim();
+        let filePath = currDir + "/" + fileName;
+
+        if ($.inArray(filePath, checkboxes) !== -1) {
+            $(this).prop('checked', true);
+        }
+    });
+
+    // taking care of master checkbox
+    if (checkboxes.length > 0 && checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
+    else $("#checkboxMaster").prop('checked', false);
 }
 
 function createDataForListView() {
@@ -1001,4 +1003,7 @@ function refreshFileList() {
     // refreshing file list
     let currView = sessionStorage.getItem("viewStyle");
     getAndDisplayFileList(currView);
+
+    // resetting checkboxes
+    checkboxes = [];
 }
