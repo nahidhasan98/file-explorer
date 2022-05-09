@@ -560,7 +560,7 @@ function downloadFile(filePath) {
 
 function downloadBatch() {
     let params = checkboxes.map(function (item) {
-        return encodeURIComponent(item.filePath);
+        return encodeURIComponent(item);
     }).join(",");
 
     let compressURL = "/download.php?fileToDownload=" + params + "&todo=compress";
@@ -865,19 +865,26 @@ function displayFileList(viewStyle) {
     $(".content").append(data);
 
     // taking care of selected checkboxes [useful in toggling list/grid]
-    let currDir = $(".currDir .cdText").text().trim();
-    $(".checkboxSingle").each(function () {
-        let fileName = $(this).parent().parent().find(".fileName").text().trim();
-        let filePath = currDir + "/" + fileName;
+    if (checkboxes.length > 0) {
+        let currDir = $(".currDir .cdText").text().trim();
+        $(".checkboxSingle").each(function () {
+            let fileName = $(this).parent().parent().find(".fileName").text().trim();
+            let filePath = currDir + "/" + fileName;
 
-        if ($.inArray(filePath, checkboxes) !== -1) {
-            $(this).prop('checked', true);
-        }
-    });
+            if ($.inArray(filePath, checkboxes) !== -1) {
+                $(this).prop('checked', true);
+            }
+        });
 
-    // taking care of master checkbox
-    if (checkboxes.length > 0 && checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
-    else $("#checkboxMaster").prop('checked', false);
+        // taking care of master checkbox
+        if (checkboxes.length == totalSelectableItems) $("#checkboxMaster").prop('checked', true);
+        else $("#checkboxMaster").prop('checked', false);
+
+        // taking care of sidebar and single icon
+        $(".batch").css("left", "0");
+        $(".iconDelete, .iconDownload, .iconRename").css("opacity", "0.6");
+        $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "none");
+    }
 }
 
 function createDataForListView() {
