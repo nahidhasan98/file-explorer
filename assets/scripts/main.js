@@ -172,10 +172,10 @@ $(document).ready(function () {
     });
 
     $("body").on("click", ".iconDownload", function () {
-        let currRow = $(this).closest("tr");
-        let fileName = currRow.find("td:eq(1)").text().trim();
         let currDir = $(".currDir .cdText").text().trim();
+        let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
+        console.log(filePath);
         downloadFile(filePath);
     });
 
