@@ -34,6 +34,23 @@ $(document).ready(function () {
         $(".search input").focus();
     });
 
+    $("#searchKey").on("keyup", function () {
+        let filter = $("#searchKey").val().toUpperCase().trim();
+        let items = $(".fileName");
+
+        // Loop through all items, and hide those who don't match the search query
+        for (i = 0; i < items.length; i++) {
+            let itemText = $(items[i]).text().toUpperCase().trim();
+
+            let elem = $(items[i]).parent().parent();
+            let currView = sessionStorage.getItem("viewStyle");
+            if (currView == "list" && elem.attr("id") == undefined) elem = $(items[i]).parent().parent().parent();  // in list view, hideable directory item reside in one level deep
+
+            if (itemText.indexOf(filter) > -1) elem.css("display", "");
+            else elem.css("display", "none");
+        }
+    });
+
     $(".iconCreateFile").on("click", function () {
         hideAllOps();
         $(".create").css("top", "10px");
@@ -885,6 +902,9 @@ function displayFileList(viewStyle) {
         $(".iconDelete, .iconDownload, .iconRename").css("opacity", "0.6");
         $(".iconDelete, .iconDownload, .iconRename").css("pointer-events", "none");
     }
+
+    // taking care of search boxes
+    $("#searchKey").val("");
 }
 
 function createDataForListView() {
@@ -925,7 +945,7 @@ function createDataForListView() {
         if (!fileList[i].isDir) data += 'iconNoCursor';
         data += '">';
 
-        data += '<span class="fileName">' + fileList[i].fileName + '</span>';
+        data += '<span class="fileName" title="' + fileList[i].fileName + '">' + fileList[i].fileName + '</span>';
 
         if (fileList[i].isDir) data += '</a>';
         data += '</td>';
@@ -978,8 +998,8 @@ function createDataForGridView() {
         else data += '<img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
 
         // file name with link
-        if (fileList[i].isDir) data += '<p class="fileName" style="font-size:16px; padding: 5px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div>';
-        else data += `<p class="fileName" style="font-size:16px; padding: 5px;">` + fileList[i].fileName + `</p>
+        if (fileList[i].isDir) data += '<p class="fileName" title="' + fileList[i].fileName + '"style="font-size:16px; padding: 5px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div>';
+        else data += `<p class="fileName" title="` + fileList[i].fileName + `"style="font-size:16px; padding: 5px;">` + fileList[i].fileName + `</p>
             <p class="fileSize" style = "font-size: 14px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p></div>`;
 
         // file ops
