@@ -175,24 +175,21 @@ $(document).ready(function () {
         let currDir = $(".currDir .cdText").text().trim();
         let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
-        console.log(filePath);
         downloadFile(filePath);
     });
 
     $("body").on("click", ".iconRename", function () {
-        let currRow = $(this).closest("tr");
-        let currRowSerial = currRow.attr("id");
-        $("#currSerial").text(currRowSerial);   // #currentSerial element is in delete modal
-
-        let fileName = currRow.find("td:eq(1)").text().trim();
         let currDir = $(".currDir .cdText").text().trim();
+        let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
+        console.log(filePath);
 
         $("#oldName").val(filePath);
-        $("#rename").val(fileName);
+        $("#rename").val(fileName); // setting up only file name(rather fullPath) because, rename field only should contain new name(not fullPath)
 
         displayRenameModal();
 
+        // setting up cursor position on rename field
         let idx = fileName.lastIndexOf(".");
         if (idx == -1) idx = fileName.length;
         $("#rename").focus();
@@ -201,9 +198,7 @@ $(document).ready(function () {
     });
 
     $("#renameForm").on("submit", function () {
-        let currDir = $(".currDir .cdText").text().trim();
-        let currRowSerial = $("#currSerial").text().trim();
-        renameFile(currDir, currRowSerial);
+        renameFile();
         return false;
     });
 
@@ -766,13 +761,16 @@ function sortBySize(table, isAsc) {
     }).appendTo(tbody);
 }
 
-function renameFile(currDir, rowSerial) {
+function renameFile() {
     $('.btnRename').css("opacity", ".7");
     $('.btnRename').css('pointer-events', "none");
     $('.btnRename').val("Renaming...");
 
+    let currDir = $(".currDir .cdText").text().trim();
+
     let oldName = $("#oldName").val().trim();
     let rename = currDir + "/" + $("#rename").val().trim();
+
     if (oldName == rename) {
         hideRenameModal();
         $('.btnRename').css("opacity", "");
@@ -782,7 +780,7 @@ function renameFile(currDir, rowSerial) {
     }
 
     let formData = $("#renameForm").serializeArray();
-    formData.find(function (input) { return input.name == 'rename'; }).value = rename; // overwrite cause we need trim
+    formData.find(function (input) { return input.name == 'rename'; }).value = rename; // overwrite cause we need trimmed value
     console.log(formData);
 
     // sending ajax post request
@@ -795,15 +793,9 @@ function renameFile(currDir, rowSerial) {
     request.done(function (response) {
         console.log(response);
         if (response.status == "success") {
-            notify(response.message, 3, colorSuccess);
-            $("tr#" + rowSerial).find("td:eq(1) img").attr("src", response.fileIcon);
-            if (response.isDir) {
-                $("tr#" + rowSerial).find("td:eq(1) a").attr("href", response.dirLink);
-                $("tr#" + rowSerial).find("td:eq(1) a").text(response.fileName);
-            } else {
-                $("tr#" + rowSerial).find("td:eq(1) span").text(response.fileName);
-            }
             hideRenameModal();
+            notify(response.message, 3, colorSuccess);
+            refreshFileList();
         } else {
             notify(response.message, 3, colorError);
         }
