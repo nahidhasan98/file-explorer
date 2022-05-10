@@ -151,7 +151,7 @@
         <div class="bin">
             <img src="./assets/images/binEmpty.png" alt="" title="Empty Recycle Bin" srcset="" title="">
             <!-- <img src="./assets/images/binFull.png" alt="" srcset="" title="Recycle Bin"> -->
-            <p style="position: fixed;left: -180px;bottom: 80px;transition: all 0.3s;padding: 5px;border: 1px solid #dae2f1;border-radius: 3px;background: #ff4d4d;color: #fff;font-weight: bold;">Not Implemented yet<span class="binSpan" style="margin-left: 5px; border-left: 1px solid; padding: 0px 5px; background: #FFF; color: #ff4d4d; cursor: pointer;">&times;</span></p>
+            <p style="position: fixed;left: -180px;bottom: 80px;transition: all 0.3s;padding: 5px;border: 1px solid #dae2f1;border-radius: 3px;background: #ff4d4d;color: #fff;font-weight: bold;">Not Implemented yet<span class="binSpan" style="margin-left: 3px; border-left: 1px solid; padding: 0px 5px; background: #FFF; color: #ff4d4d; cursor: pointer;">&times;</span></p>
         </div>
     </div>
 

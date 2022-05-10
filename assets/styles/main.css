@@ -279,6 +279,7 @@ body {
   grid-row-gap: 5px;
   align-items: center;
   border-radius: 0px 4px 4px 0px;
+  box-shadow: rgb(38, 57, 77) 0px 10px 30px -10px;
 }
 
 .batch img {
