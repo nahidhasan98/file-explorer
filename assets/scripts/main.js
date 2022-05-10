@@ -933,7 +933,7 @@ function displayFileList(list, viewStyle) {
 function createDataForListView(list) {
     // <!-- table -->
     let data = `<table class="feTable">
-    <tr>
+    <tr style="background: #ecf0f8;">
     <th style="width: 3%;">
     <input type="checkbox" class="checkbox" id="checkboxMaster">
     </th>
