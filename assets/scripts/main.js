@@ -275,7 +275,7 @@ $(document).ready(function () {
             $(".batch").css("left", "0");
             $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6", "pointer-events": "none" });
         } else {
-            $(".batch").css("left", "-52px");
+            $(".batch").css("left", "-60px");
             $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "", "pointer-events": "" });
         }
 
@@ -295,7 +295,7 @@ $(document).ready(function () {
             $(".batch").css("left", "0");
             $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6", "pointer-events": "none" });
         } else {
-            $(".batch").css("left", "-52px");
+            $(".batch").css("left", "-60px");
             $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "", "pointer-events": "" });
         }
     });
@@ -435,7 +435,7 @@ function deleteBatch() {
             notify(response.message, 3, colorSuccess);
             refreshFileList();
             checkboxes = [];
-            $(".batch").css("left", "-52px");
+            $(".batch").css("left", "-60px");
             $(".iconDelete, .iconDownload").css({ "opacity": "", "pointer-events": "" });
         } else {
             notify(response.message, 3, colorError);
