@@ -894,6 +894,7 @@ function createDataForListView() {
     <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="sizeUp" style="display: none;">
     <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="sizeDown" style="display: none;">
     </th>
+    <th colspan="2" style="width: 16%;">Last Modified</th>
     <th style="width: 15%;">Options</th>
     </tr>`;
 
@@ -927,6 +928,11 @@ function createDataForListView() {
             data += "<td>" + fileList[i].size + "</td>";
             data += "<td>" + fileList[i].sizeUnit + "</td>";
         }
+
+        // last modified
+        let lastModified = formatDateTime(fileList[i].lastModified);
+        data += `<td style="border-right: none; text-align: center; width: 8%;">` + lastModified.time + `</td>
+                <td style="text-align: center; width: 8%;">` + lastModified.date + `</td>`;
 
         // delete icon
         data += '<td>';
@@ -968,9 +974,13 @@ function createDataForGridView() {
         else data += '<img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
 
         // file name with link
-        if (fileList[i].isDir) data += '<p class="fileName" title="' + fileList[i].fileName + '"style="font-size:16px; padding: 5px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p></div>';
-        else data += `<p class="fileName" title="` + fileList[i].fileName + `"style="font-size:16px; padding: 5px;">` + fileList[i].fileName + `</p>
-            <p class="fileSize" style = "font-size: 14px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p></div>`;
+        if (fileList[i].isDir) data += '<p class="fileName" title="' + fileList[i].fileName + '"style="font-size:16px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p>';
+        else data += `<p class="fileName" title="` + fileList[i].fileName + `"style="font-size:16px;">` + fileList[i].fileName + `</p>
+            <p class="fileSize" style = "font-size: 12px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p>`;
+
+        // last modified
+        let lastModified = formatDateTime(fileList[i].lastModified);
+        data += `<p class="lastModified" style="font-size: 12px; text-align:center;">` + lastModified.time + ` ` + lastModified.date + `</p></div>`;
 
         // file ops
         data += '<div class="cardOps">';
@@ -1004,3 +1014,11 @@ function refreshFileList() {
     // resetting checkboxes
     checkboxes = [];
 }
+
+function formatDateTime(unixTimestamp) {
+    let d = new Date(unixTimestamp * 1000); // converting into milliseconds
+    let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let date = d.getDate() + " " + month[d.getMonth()] + ", " + d.getFullYear();
+    let time = d.toLocaleTimeString().toLowerCase();
+    return { "time": time, "date": date };
+};

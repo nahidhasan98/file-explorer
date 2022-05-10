@@ -296,7 +296,7 @@ body {
 }
 
 .fileCard {
-  height: 195px;
+  height: 205px;
   width: 185px;
   border: 1px solid #dae2f1;
   overflow: hidden;
@@ -304,7 +304,7 @@ body {
 
 .cardOps {
   text-align: center;
-  padding: 5px 5px 10px 5px;
+  padding: 5px;
   border-top: 1px solid #edf1f8;
 }
 
