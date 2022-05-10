@@ -307,6 +307,16 @@ $(document).ready(function () {
     $(".iconDeleteMarked").on("click", function () {
         displayDeleteModal();
     });
+
+    $(".bin").on("click", function () {
+        $(".bin p").css("left", "18px");
+    });
+
+    $(".binSpan").on("click", function () {
+        setTimeout(function () {
+            $(".bin p").css("left", "-180px");
+        }, 100);
+    });
 });
 
 function hideAllOps() {
