@@ -28,7 +28,7 @@
                 <span><img src="./assets/images/createDir.png" alt="" srcset="" title="Create Directory" class="icon iconCreateDir"></span>
                 <span><img src="./assets/images/upload.png" alt="" srcset="" title="Upload" class="icon iconUpload"></span>
                 <div class="opsIconRight">
-                    <span><img src="./assets/images/grid.png" alt="" srcset="" title="Upload" class="icon iconGrid"></span>
+                    <span><img src="./assets/images/grid.png" alt="" srcset="" title="List/Grid View" class="icon iconGrid"></span>
                 </div>
             </div>
             <!-- options operration div -->
@@ -145,6 +145,12 @@
         <div class="batch">
             <img src="./assets/images/delete.png" alt="" srcset="" title="Delete Marked Items" class="icon iconDeleteMarked" style="margin: 0;">
             <img src="./assets/images/download.png" alt="" srcset="" title="Download Marked Items" class="icon iconDownloadMarked">
+        </div>
+
+        <!-- recycle bin -->
+        <div class="bin">
+            <img src="./assets/images/binEmpty.png" alt="" title="Not Implemented yet" srcset="" title="">
+            <!-- <img src="./assets/images/binFull.png" alt="" srcset="" title=""> -->
         </div>
     </div>
 
