@@ -4,6 +4,7 @@ const colorSuccess = "#00b359";
 const colorError = "#ff4d4d";
 let sortByNameAsc = true;
 let sortBySizeAsc = false;
+let sortByModifiedTimeAsc = false;
 let currentOngoingRequest = false;
 let checkboxes = [];
 let totalSelectableItems = 0;
@@ -17,11 +18,11 @@ $(document).ready(function () {
         let currView = sessionStorage.getItem("viewStyle");
 
         if (currView == "grid") {
-            displayFileList("list");
+            displayFileList(fileList, "list");
             sessionStorage.setItem("viewStyle", "list");
             $(".iconGrid").css("background", "");
         } else {
-            displayFileList("grid");
+            displayFileList(fileList, "grid");
             sessionStorage.setItem("viewStyle", "grid");
             $(".iconGrid").css("background", "#dae2f1");
         }
@@ -222,10 +223,10 @@ $(document).ready(function () {
 
         if (sortByNameAsc) {
             $("#nameDown").css("display", "");
-            $("#nameUp, #sizeUp, #sizeDown").css("display", "none");
+            $("#nameUp, #sizeUp, #sizeDown, #modifiedTimeUp, #modifiedTimeDown").css("display", "none");
         } else {
             $("#nameUp").css("display", "");
-            $("#nameDown, #sizeUp, #sizeDown").css("display", "none");
+            $("#nameDown, #sizeUp, #sizeDown, #modifiedTimeUp, #modifiedTimeDown").css("display", "none");
         }
     });
 
@@ -235,10 +236,23 @@ $(document).ready(function () {
 
         if (sortBySizeAsc) {
             $("#sizeDown").css("display", "");
-            $("#sizeUp, #nameUp, #nameDown").css("display", "none");
+            $("#sizeUp, #nameUp, #nameDown, #modifiedTimeUp, #modifiedTimeDown").css("display", "none");
         } else {
             $("#sizeUp").css("display", "");
-            $("#sizeDown, #nameUp, #nameDown").css("display", "none");
+            $("#sizeDown, #nameUp, #nameDown, #modifiedTimeUp, #modifiedTimeDown").css("display", "none");
+        }
+    });
+
+    $("body").on("click", ".sortByModifiedTime", function () {
+        sortByModifiedTime($('.feTable'), !sortByModifiedTimeAsc);
+        sortByModifiedTimeAsc = !sortByModifiedTimeAsc;
+
+        if (sortByModifiedTimeAsc) {
+            $("#modifiedTimeDown").css("display", "");
+            $("#modifiedTimeUp, #nameUp, #nameDown, #sizeUp, #sizeDown").css("display", "none");
+        } else {
+            $("#modifiedTimeUp").css("display", "");
+            $("#modifiedTimeDown, #nameUp, #nameDown, #sizeUp, #sizeDown").css("display", "none");
         }
     });
 
@@ -684,20 +698,20 @@ function sortByName(table, isAsc) {
 
     // directory sorting
     tbody.find('tr:gt(1)tr:lt(' + rangeIdx + ')').sort(function (a, b) {
-        if (isAsc) {
-            return $('td:nth-child(2)', a).text().localeCompare($('td:nth-child(2)', b).text());
-        } else {
-            return $('td:nth-child(2)', b).text().localeCompare($('td:nth-child(2)', a).text());
-        }
+        let aFileName = $('td:nth-child(2)', a).text();
+        let bFileName = $('td:nth-child(2)', b).text();
+
+        if (isAsc) return aFileName.localeCompare(bFileName);
+        else return bFileName.localeCompare(aFileName);
     }).appendTo(tbody);
 
     // file sorting
     tbody.find('tr:gt(1)tr:lt(' + (totalRows - rangeIdx - 2) + ')').sort(function (a, b) {
-        if (isAsc) {
-            return $('td:nth-child(2)', a).text().localeCompare($('td:nth-child(2)', b).text());
-        } else {
-            return $('td:nth-child(2)', b).text().localeCompare($('td:nth-child(2)', a).text());
-        }
+        let aFileName = $('td:nth-child(2)', a).text();
+        let bFileName = $('td:nth-child(2)', b).text();
+
+        if (isAsc) return aFileName.localeCompare(bFileName);
+        else return bFileName.localeCompare(aFileName);
     }).appendTo(tbody);
 }
 
@@ -709,34 +723,73 @@ function sortBySize(table, isAsc) {
 
     // directory sorting
     tbody.find('tr:gt(1)tr:lt(' + rangeIdx + ')').sort(function (a, b) {
-        if (isAsc) {
-            return ($('td:nth-child(3)', a).text() * 1) - ($('td:nth-child(3)', b).text() * 1);
-        } else {
-            return ($('td:nth-child(3)', b).text() * 1) - ($('td:nth-child(3)', a).text() * 1);
-        }
+        let aSizeText = $('td:nth-child(3)', a).text();
+        let bSizeText = $('td:nth-child(3)', b).text();
+        let aFileName = $('td:nth-child(2)', a).text();
+        let bFileName = $('td:nth-child(2)', b).text();
+
+        if (isAsc) return ((aSizeText * 1) - (bSizeText * 1)) || (aFileName.localeCompare(bFileName));  // sort by size then name-Asc
+        else return ((bSizeText * 1) - (aSizeText * 1)) || (aFileName.localeCompare(bFileName));
     }).appendTo(tbody);
 
     // file sorting
     tbody.find('tr:gt(1)tr:lt(' + (totalRows - rangeIdx - 2) + ')').sort(function (a, b) {
+        let aSizeText = $('td:nth-child(3)', a).text();
+        let bSizeText = $('td:nth-child(3)', b).text();
+        let aSizeUnit = $('td:nth-child(4)', a).text();
+        let bSizeUnit = $('td:nth-child(4)', b).text();
+        let aFileName = $('td:nth-child(2)', a).text();
+        let bFileName = $('td:nth-child(2)', b).text();
         let aSize, bSize;
 
-        if ($('td:nth-child(4)', a).text() == "bytes") aSize = 1.0;
-        else if ($('td:nth-child(4)', a).text() == "kB") aSize = 1024.0;
-        else if ($('td:nth-child(4)', a).text() == "MB") aSize = 1024.0 * 1024.0;
-        else if ($('td:nth-child(4)', a).text() == "GB") aSize = 1024.0 * 1024.0 * 1024.0;
+        if (aSizeUnit == "bytes") aSize = 1.0;
+        else if (aSizeUnit == "kB") aSize = 1024.0;
+        else if (aSizeUnit == "MB") aSize = 1024.0 * 1024.0;
+        else if (aSizeUnit == "GB") aSize = 1024.0 * 1024.0 * 1024.0;
 
-        if ($('td:nth-child(4)', b).text() == "bytes") bSize = 1.0;
-        else if ($('td:nth-child(4)', b).text() == "kB") bSize = 1024.0;
-        else if ($('td:nth-child(4)', b).text() == "MB") bSize = 1024.0 * 1024.0;
-        else if ($('td:nth-child(4)', b).text() == "GB") bSize = 1024.0 * 1024.0 * 1024.0;
+        if (bSizeUnit == "bytes") bSize = 1.0;
+        else if (bSizeUnit == "kB") bSize = 1024.0;
+        else if (bSizeUnit == "MB") bSize = 1024.0 * 1024.0;
+        else if (bSizeUnit == "GB") bSize = 1024.0 * 1024.0 * 1024.0;
 
-        if (isAsc) {
-            // sort by size then name
-            return (($('td:nth-child(3)', a).text() * aSize) - ($('td:nth-child(3)', b).text() * bSize));
-        } else {
-            return (($('td:nth-child(3)', b).text() * bSize) - ($('td:nth-child(3)', a).text() * aSize));
-        }
+        if (isAsc) return ((aSizeText * aSize) - (bSizeText * bSize)) || (aFileName.localeCompare(bFileName));  // sort by size then name-Asc
+        else return ((bSizeText * bSize) - (aSizeText * aSize)) || (aFileName.localeCompare(bFileName));
     }).appendTo(tbody);
+}
+
+function sortByModifiedTime(table, isAsc) {
+    let returnDir;
+
+    // seperating dir & file list
+    let tempDirList = [], tempFileList = [];
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileName == "..") {
+            returnDir = fileList[i];
+            continue;
+        }
+
+        if (fileList[i].isDir) tempDirList.push(fileList[i]);
+        else tempFileList.push(fileList[i]);
+    }
+
+    // directory sorting
+    tempDirList.sort(function (a, b) {
+        if (isAsc) return a.lastModified - b.lastModified;
+        else return b.lastModified - a.lastModified;
+    });
+
+    // file sorting
+    tempFileList.sort(function (a, b) {
+        if (isAsc) return a.lastModified - b.lastModified;
+        else return b.lastModified - a.lastModified;
+    });
+
+    // merging two array
+    let total = [returnDir, ...tempDirList, ...tempFileList];
+
+    // displaying list
+    let currView = sessionStorage.getItem("viewStyle");
+    displayFileList(total, currView);
 }
 
 function renameFile() {
@@ -829,7 +882,7 @@ function getAndDisplayFileList(viewStyle) {
         if (response.status == "success") {
             fileList = response.files;
             totalSelectableItems = getSelectableItemsNumber();
-            displayFileList(viewStyle);
+            displayFileList(fileList, viewStyle);
             $(".cdText").text("/" + response.currDir);
         } else {
             $(".content").append('<p style="text-align: center;">' + response.message + '</p>');
@@ -843,11 +896,11 @@ function getAndDisplayFileList(viewStyle) {
     });
 }
 
-function displayFileList(viewStyle) {
+function displayFileList(list, viewStyle) {
     let data = "";
 
-    if (viewStyle == "grid") data = createDataForGridView();
-    else data = createDataForListView();
+    if (viewStyle == "grid") data = createDataForGridView(list);
+    else data = createDataForListView(list);
 
     $(".content").empty();
     $(".content").append(data);
@@ -877,7 +930,7 @@ function displayFileList(viewStyle) {
     $("#searchKey").val("");
 }
 
-function createDataForListView() {
+function createDataForListView(list) {
     // <!-- table -->
     let data = `<table class="feTable">
     <tr>
@@ -894,57 +947,61 @@ function createDataForListView() {
     <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="sizeUp" style="display: none;">
     <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="sizeDown" style="display: none;">
     </th>
-    <th colspan="2" style="width: 16%;">Last Modified</th>
+    <th colspan="2" style="width: 16%;" class="sortByModifiedTime">
+    Last Modified
+    <img src="./assets/images/sUp.png" alt="" srcset="" class="icon iconSort" id="modifiedTimeUp" style="display: none;">
+    <img src="./assets/images/sDown.png" alt="" srcset="" class="icon iconSort" id="modifiedTimeDown" style="display: none;">
+    </th>
     <th style="width: 15%;">Options</th>
     </tr>`;
 
     let id = 0;
-    for (let i = 0; i < fileList.length; i++) {
-        if (fileList[i].fileName == ".") continue;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].fileName == ".") continue;
 
         data += '<tr id="' + ++id + '">';
 
         // check box
-        if (fileList[i].isDir) data += '<td></td>';
+        if (list[i].isDir) data += '<td></td>';
         else data += '<td><input type="checkbox" class="checkboxSingle"></td>';
 
         // file icon & name with link
         data += '<td>';
-        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '" class="dir">';
+        if (list[i].isDir) data += '<a href="' + list[i].dirLink + '" class="dir">';
 
-        data += '<img src="' + fileList[i].fileIcon + '" alt="" srcset="" class="icon iconExt ';
-        if (!fileList[i].isDir) data += 'iconNoCursor';
+        data += '<img src="' + list[i].fileIcon + '" alt="" srcset="" class="icon iconExt ';
+        if (!list[i].isDir) data += 'iconNoCursor';
         data += '">';
 
-        data += '<span class="fileName" title="' + fileList[i].fileName + '">' + fileList[i].fileName + '</span>';
+        data += '<span class="fileName" title="' + list[i].fileName + '">' + list[i].fileName + '</span>';
 
-        if (fileList[i].isDir) data += '</a>';
+        if (list[i].isDir) data += '</a>';
         data += '</td>';
 
         // file size
-        if (fileList[i].isDir) {
+        if (list[i].isDir) {
             data += '<td colspan="2" style="border-right: 1px solid #dae2f1;">Folder</td>';
         } else {
-            data += "<td>" + fileList[i].size + "</td>";
-            data += "<td>" + fileList[i].sizeUnit + "</td>";
+            data += "<td>" + list[i].size + "</td>";
+            data += "<td>" + list[i].sizeUnit + "</td>";
         }
 
         // last modified
-        let lastModified = formatDateTime(fileList[i].lastModified);
+        let lastModified = formatDateTime(list[i].lastModified);
         data += `<td style="border-right: none; text-align: center; width: 8%;">` + lastModified.time + `</td>
                 <td style="text-align: center; width: 8%;">` + lastModified.date + `</td>`;
 
         // delete icon
         data += '<td>';
-        if (fileList[i].fileName != "..")
+        if (list[i].fileName != "..")
             data += '<img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">';
 
         // download icon
-        if (!fileList[i].isDir)
+        if (!list[i].isDir)
             data += '<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">';
 
         // rename icon
-        if (fileList[i].fileName != "..")
+        if (list[i].fileName != "..")
             data += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename">';
 
         data += '</td></tr>';
@@ -955,45 +1012,45 @@ function createDataForListView() {
     return data;
 }
 
-function createDataForGridView() {
+function createDataForGridView(list) {
     // <!-- grid -->
     let data = `<div id="grid">`;
 
     let id = 0;
-    for (let i = 0; i < fileList.length; i++) {
-        if (fileList[i].fileName == ".") continue;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].fileName == ".") continue;
 
         data += `<div class="fileCard">
                 <div class="cardIcon" style = "position: relative;">`;
 
         // check box
-        if (!fileList[i].isDir) data += '<input type="checkbox" class="checkboxSingle" style="position: absolute; top:10px; left:10px;">';
+        if (!list[i].isDir) data += '<input type="checkbox" class="checkboxSingle" style="position: absolute; top:10px; left:10px;">';
 
         // icon
-        if (fileList[i].isDir) data += '<a href="' + fileList[i].dirLink + '"><img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:120px; display:block; margin: auto; padding:5px;"></div><div class="cardText"></a>';
-        else data += '<img src = "' + fileList[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
+        if (list[i].isDir) data += '<a href="' + list[i].dirLink + '"><img src = "' + list[i].fileIcon + '" alt="" srcset="" style="height:120px; display:block; margin: auto; padding:5px;"></div><div class="cardText"></a>';
+        else data += '<img src = "' + list[i].fileIcon + '" alt="" srcset="" style="height:100px; display:block; margin: auto; padding:5px;"></div><div class="cardText">';
 
         // file name with link
-        if (fileList[i].isDir) data += '<p class="fileName" title="' + fileList[i].fileName + '"style="font-size:16px;"><a href="' + fileList[i].dirLink + '" class="dir">' + fileList[i].fileName + '</a></p>';
-        else data += `<p class="fileName" title="` + fileList[i].fileName + `"style="font-size:16px;">` + fileList[i].fileName + `</p>
-            <p class="fileSize" style = "font-size: 12px; text-align:center;">` + fileList[i].size + ` ` + fileList[i].sizeUnit + `</p>`;
+        if (list[i].isDir) data += '<p class="fileName" title="' + list[i].fileName + '"style="font-size:16px; padding: 0px 5px;"><a href="' + list[i].dirLink + '" class="dir">' + list[i].fileName + '</a></p>';
+        else data += `<p class="fileName" title="` + list[i].fileName + `"style="font-size:16px; padding: 0px 5px;">` + list[i].fileName + `</p>
+            <p class="fileSize" style = "font-size: 12px; text-align:center;">` + list[i].size + ` ` + list[i].sizeUnit + `</p>`;
 
         // last modified
-        let lastModified = formatDateTime(fileList[i].lastModified);
+        let lastModified = formatDateTime(list[i].lastModified);
         data += `<p class="lastModified" style="font-size: 12px; text-align:center;">` + lastModified.time + ` ` + lastModified.date + `</p></div>`;
 
         // file ops
         data += '<div class="cardOps">';
 
-        if (fileList[i].fileName != "..")
+        if (list[i].fileName != "..")
             data += '<img src="./assets/images/delete.png" alt="delete" srcset="" title="Delete" class="icon iconDelete">';
 
         // download icon
-        if (!fileList[i].isDir)
+        if (!list[i].isDir)
             data += '<img src="./assets/images/download.png" alt="download" srcset="" title="Download" class="icon iconDownload">';
 
         // rename icon
-        if (fileList[i].fileName != "..")
+        if (list[i].fileName != "..")
             data += '<img src="./assets/images/rename.png" alt="Rename" srcset="" title="Rename" class="icon iconRename">';
 
         data += '</div>';   // .cardOps div closing
