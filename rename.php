@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['sizeUnit'] = $createdFile->getFormattedSize()["unit"];
             $response['isDir'] = $createdFile->isDir();
             $response['dirLink'] = getDirLink($createdFile);
+            $response['lastModified'] = $createdFile->lastModified();
         }
     }
 }

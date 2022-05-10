@@ -40,4 +40,10 @@ class MyFile
     {
         return is_dir($this->filePath);
     }
+
+    function lastModified()
+    {
+        return filemtime($this->filePath);
+        // return date("F d Y H:i:s.", filemtime($this->filePath));
+    }
 }

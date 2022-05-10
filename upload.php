@@ -73,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $response['size'] = $uploadedFile->getFormattedSize()["size"];
         $response['sizeUnit'] = $uploadedFile->getFormattedSize()["unit"];
         $response['isDir'] = $uploadedFile->isDir();
+        $response['dirLink'] = getDirLink($uploadedFile);
+        $response['lastModified'] = $uploadedFile->lastModified();
     }
 }
 

@@ -26,6 +26,7 @@ if (!file_exists($dir)) {
         $temp['sizeUnit'] = $currFile->getFormattedSize()["unit"];
         $temp['isDir'] = $currFile->isDir();
         $temp['dirLink'] = getDirLink($currFile);
+        $temp['lastModified'] = $currFile->lastModified();
 
         array_push($fileList, $temp);
     }
