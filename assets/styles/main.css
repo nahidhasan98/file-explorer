@@ -21,6 +21,8 @@ body {
   text-align: center;
   font-size: 24px;
   padding: 10px 0px;
+  background: lightsteelblue;
+  margin: 5px 0px;
 }
 
 .options,
@@ -198,6 +200,11 @@ body {
   border-bottom: none;
 }
 
+.checkboxSingle,
+#checkboxMaster {
+  cursor: pointer;
+}
+
 .icon {
   height: 20px;
   vertical-align: middle;
@@ -318,4 +325,13 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.bin img {
+  height: 60px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  filter: drop-shadow(-5px 5px 3px rgba(0, 0, 0, 0.5));
+  cursor: pointer;
 }
