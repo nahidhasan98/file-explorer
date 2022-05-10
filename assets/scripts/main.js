@@ -55,7 +55,7 @@ $(document).ready(function () {
     $(".iconCreateFile").on("click", function () {
         hideAllOps();
         $(".create").css("top", "10px");
-        $(".iconCreateFile").css({ "background": "#dae2f1" });
+        $(".iconCreateFile").css("background", "#dae2f1");
         $(".fileType").val("file");
         $(".addInput").attr("placeholder", "Enter file name");
         $(".addInput").focus();
@@ -64,7 +64,7 @@ $(document).ready(function () {
     $(".iconCreateDir").on("click", function () {
         hideAllOps();
         $(".create").css("top", "10px");
-        $(".iconCreateDir").css({ "background": "#dae2f1" });
+        $(".iconCreateDir").css("background", "#dae2f1");
         $(".fileType").val("directory");
         $(".addInput").attr("placeholder", "Enter directory name");
         $(".addInput").focus();
@@ -134,7 +134,7 @@ $(document).ready(function () {
 
         $(".btnReplace").val("Replace");
         $(".btnNewName").val("Upload with New Name");
-        $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css({ "opacity": "" }, { 'pointer-events': "" });
+        $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css({ "opacity": "", 'pointer-events': "" });
     });
 
     $('#btnBrowseFile').on("click", function () {
@@ -170,7 +170,7 @@ $(document).ready(function () {
         let currDir = $(".currDir .cdText").text().trim();
 
         $(".btnReplace").val("Replacing...");
-        $('.btnReplace, .btnCancelNewName, .btnNewName').css({ "opacity": ".7" }, { 'pointer-events': "none" });
+        $('.btnReplace, .btnCancelNewName, .btnNewName').css({ "opacity": ".7", 'pointer-events': "none" });
 
         uploadFile(currDir, files, "", "true");
     });
@@ -181,7 +181,7 @@ $(document).ready(function () {
         let customName = $("#customName").val().trim();
 
         $(".btnNewName").val("Uploading...");
-        $('.btnNewName, .btnReplace, .btnCancelReplace').css({ "opacity": ".7" }, { 'pointer-events': "none" });
+        $('.btnNewName, .btnReplace, .btnCancelReplace').css({ "opacity": ".7", 'pointer-events': "none" });
 
         uploadFile(currDir, files, customName, "custom");
     });
@@ -273,10 +273,10 @@ $(document).ready(function () {
 
         if (checkboxes.length > 0) {
             $(".batch").css("left", "0");
-            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6" }, { "pointer-events": "none" });
+            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6", "pointer-events": "none" });
         } else {
             $(".batch").css("left", "-52px");
-            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "" }, { "pointer-events": "" });
+            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "", "pointer-events": "" });
         }
 
         // taking care of master checkbox
@@ -293,10 +293,10 @@ $(document).ready(function () {
         console.log(checkboxes);
         if (checkboxes.length > 0) {
             $(".batch").css("left", "0");
-            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6" }, { "pointer-events": "none" });
+            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6", "pointer-events": "none" });
         } else {
             $(".batch").css("left", "-52px");
-            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "" }, { "pointer-events": "" });
+            $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "", "pointer-events": "" });
         }
     });
 
@@ -338,7 +338,7 @@ function unSelectAllItems() {
 }
 
 function createFileOrDir(formData) {
-    $('#addSubmit').css({ "opacity": ".7" }, { "pointer-events": "none" });
+    $('#addSubmit').css({ "opacity": ".7", "pointer-events": "none" });
     $('#addSubmit').val("Creating...");
 
     // sending ajax post request
@@ -365,13 +365,13 @@ function createFileOrDir(formData) {
         console.log(response);
     });
     request.always(function () {
-        $('#addSubmit').css({ "opacity": "" }, { "pointer-events": "" });
+        $('#addSubmit').css({ "opacity": "", "pointer-events": "" });
         $('#addSubmit').val("Create");
     });
 }
 
 function deleteFile(filePath) {
-    $('.btnDelete').css({ "opacity": ".7" }, { "pointer-events": "none" });
+    $('.btnDelete').css({ "opacity": ".7", "pointer-events": "none" });
     $('.btnDelete').val("Deleting...");
 
     let data = { fileToDelete: filePath };
@@ -399,7 +399,7 @@ function deleteFile(filePath) {
         console.log(response);
     });
     request.always(function () {
-        $('.btnDelete').css({ "opacity": "" }, { "pointer-events": "" });
+        $('.btnDelete').css({ "opacity": "", "pointer-events": "" });
         $('.btnDelete').val("Delete");
 
         hideDeleteModal();
@@ -407,7 +407,7 @@ function deleteFile(filePath) {
 }
 
 function deleteBatch() {
-    $('.btnDelete').css({ "opacity": ".7" }, { "pointer-events": "none" });
+    $('.btnDelete').css({ "opacity": ".7", "pointer-events": "none" });
     $('.btnDelete').val("Deleting...");
 
     let data = { fileToDelete: checkboxes };
@@ -426,7 +426,7 @@ function deleteBatch() {
             refreshFileList();
             checkboxes = [];
             $(".batch").css("left", "-52px");
-            $(".iconDelete, .iconDownload").css({ "opacity": "" }, { "pointer-events": "" });
+            $(".iconDelete, .iconDownload").css({ "opacity": "", "pointer-events": "" });
         } else {
             notify(response.message, 3, colorError);
         }
@@ -436,7 +436,7 @@ function deleteBatch() {
         console.log(response);
     });
     request.always(function () {
-        $('.btnDelete').css({ "opacity": "" }, { "pointer-events": "" });
+        $('.btnDelete').css({ "opacity": "", "pointer-events": "" });
         $('.btnDelete').val("Delete");
 
         hideDeleteModal();
@@ -450,7 +450,7 @@ function uploadFile(currDir, files, customName, replaceType) {
         return false;
     }
 
-    $('#btnUpload, #btnBrowseFile').css({ "opacity": ".7" }, { "pointer-events": "none" });
+    $('#btnUpload, #btnBrowseFile').css({ "opacity": ".7", "pointer-events": "none" });
     $('#btnUpload img').attr("src", "./assets/images/uploading.gif");
     $('#btnUpload span').text("Uploading...");
 
@@ -484,7 +484,7 @@ function uploadFile(currDir, files, customName, replaceType) {
 
         $(".btnReplace").val("Replace");
         $(".btnNewName").val("Upload with New Name");
-        $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css({ "opacity": "" }, { "pointer-events": "" });
+        $('.btnReplace, .btnNewName, .btnCancelReplace, .btnCancelNewName').css({ "opacity": "", "pointer-events": "" });
 
         let idx = responseFileName.lastIndexOf(".");
         if (idx == -1) idx = responseFileName.length;
@@ -551,7 +551,7 @@ function uploadFile(currDir, files, customName, replaceType) {
             console.log(response);
         });
         request.always(function () {
-            $('#btnUpload, #btnBrowseFile').css({ "opacity": "" }, { "pointer-events": "" });
+            $('#btnUpload, #btnBrowseFile').css({ "opacity": "", "pointer-events": "" });
             $('#btnUpload img').attr("src", "./assets/images/upCloud.png");
             $('#btnUpload span').text("Upload");
         });
@@ -644,7 +644,7 @@ function hideUploadModal() {
     let modal = $("#uploadModal");
     modal.css("display", "none");
 
-    $('#btnUpload, #btnBrowseFile').css({ "opacity": "" }, { "pointer-events": "" });
+    $('#btnUpload, #btnBrowseFile').css({ "opacity": "", "pointer-events": "" });
     $('#btnUpload img').attr("src", "./assets/images/upCloud.png");
     $('#btnUpload span').text("Upload");
 }
@@ -793,7 +793,7 @@ function sortByModifiedTime(table, isAsc) {
 }
 
 function renameFile() {
-    $('.btnRename').css({ "opacity": ".7" }, { "pointer-events": "none" });
+    $('.btnRename').css({ "opacity": ".7", "pointer-events": "none" });
     $('.btnRename').val("Renaming...");
 
     let currDir = $(".currDir .cdText").text().trim();
@@ -803,7 +803,7 @@ function renameFile() {
 
     if (oldName == rename) {
         hideRenameModal();
-        $('.btnRename').css({ "opacity": "" }, { "pointer-events": "" });
+        $('.btnRename').css({ "opacity": "", "pointer-events": "" });
         $('.btnRename').val("Rename");
         return;
     }
@@ -834,7 +834,7 @@ function renameFile() {
         console.log(response);
     });
     request.always(function () {
-        $('.btnRename').css({ "opacity": "" }, { "pointer-events": "" });
+        $('.btnRename').css({ "opacity": "", "pointer-events": "" });
         $('.btnRename').val("Rename");
     });
 }
@@ -923,7 +923,7 @@ function displayFileList(list, viewStyle) {
 
         // taking care of sidebar and single icon
         $(".batch").css("left", "0");
-        $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6" }, { "pointer-events": "none" });
+        $(".iconDelete, .iconDownload, .iconRename").css({ "opacity": "0.6", "pointer-events": "none" });
     }
 
     // taking care of search boxes
