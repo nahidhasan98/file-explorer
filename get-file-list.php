@@ -34,7 +34,7 @@ if (!file_exists($dir)) {
     $response = [
         "status" => "success",
         "files" => $fileList,
-        "currDir" => str_replace(rootDir, "root", $dir),
+        "currDir" => str_replace(rootDir, "/root", $dir),
     ];
 }
 
