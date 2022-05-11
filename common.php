@@ -113,10 +113,10 @@ function getDirLink($file)
 
     if ($file->name != "..") {
         // if a directory (not /..)
-        $dirLink = str_replace(rootDir . "/", "/file-explorer.php?dir=", $file->filePath);
+        $dirLink = str_replace(rootDir . "/", "index.php?dir=", $file->filePath);
     } else {
         // if root directory -> won't go back (stay in root)
-        if ($file->filePath == rootDir . "/..") $dirLink = "/file-explorer.php";
+        if ($file->filePath == rootDir . "/..") $dirLink = "index.php";
         else {
             $index = -1;
             $count = 0;
@@ -131,8 +131,8 @@ function getDirLink($file)
 
             $temp = substr($file->filePath, 0, $index);
 
-            if ($temp == rootDir) $dirLink = "/file-explorer.php";
-            else $dirLink = str_replace(rootDir . "/", "/file-explorer.php?dir=", $temp);
+            if ($temp == rootDir) $dirLink = "index.php";
+            else $dirLink = str_replace(rootDir . "/", "index.php?dir=", $temp);
         }
     }
 
