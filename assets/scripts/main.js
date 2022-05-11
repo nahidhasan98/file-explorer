@@ -9,6 +9,7 @@ let currentOngoingRequest = false;
 let checkboxes = [];
 let totalSelectableItems = 0;
 let fileList = [];
+let currDir = $(".currDir .cdText").text().trim();
 
 $(document).ready(function () {
     let currView = sessionStorage.getItem("viewStyle");
@@ -78,7 +79,6 @@ $(document).ready(function () {
 
     $("#createForm").on('submit', function (e) {
         e.preventDefault();
-        let currDir = $(".currDir .cdText").text().trim();
 
         if ($(".addInput").val().trim().length == 0) {
             $(".addInput").val("");
@@ -94,7 +94,6 @@ $(document).ready(function () {
     });
 
     $("body").on("click", ".iconDelete", function () {
-        let currDir = $(".currDir .cdText").text().trim();
         let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
 
@@ -159,42 +158,37 @@ $(document).ready(function () {
     $("#uploadForm").on('submit', function (e) {
         e.preventDefault();
         let files = $('#fileToUpload').prop('files');
-        let currDir = $(".currDir .cdText").text().trim();
 
-        uploadFile(currDir, files, "", "false");
+        uploadFile(files, "", "false");
         return false;
     });
 
     $(".btnReplace").on("click", function () {
         let files = $('#fileToUpload').prop('files');
-        let currDir = $(".currDir .cdText").text().trim();
 
         $(".btnReplace").val("Replacing...");
         $('.btnReplace, .btnCancelNewName, .btnNewName').css({ "opacity": ".7", 'pointer-events': "none" });
 
-        uploadFile(currDir, files, "", "true");
+        uploadFile(files, "", "true");
     });
 
     $(".btnNewName").on("click", function () {
         let files = $('#fileToUpload').prop('files');
-        let currDir = $(".currDir .cdText").text().trim();
         let customName = $("#customName").val().trim();
 
         $(".btnNewName").val("Uploading...");
         $('.btnNewName, .btnReplace, .btnCancelReplace').css({ "opacity": ".7", 'pointer-events': "none" });
 
-        uploadFile(currDir, files, customName, "custom");
+        uploadFile(files, customName, "custom");
     });
 
     $("body").on("click", ".iconDownload", function () {
-        let currDir = $(".currDir .cdText").text().trim();
         let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
         downloadFile(filePath);
     });
 
     $("body").on("click", ".iconRename", function () {
-        let currDir = $(".currDir .cdText").text().trim();
         let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
         console.log(filePath);
@@ -257,7 +251,6 @@ $(document).ready(function () {
     });
 
     $("body").on("click", ".checkboxSingle", function () {
-        let currDir = $(".currDir .cdText").text().trim();
         let fileName = $(this).parent().parent().find(".fileName").text().trim();
         let filePath = currDir + "/" + fileName;
 
@@ -314,7 +307,7 @@ $(document).ready(function () {
 
     $(".binSpan").on("click", function () {
         setTimeout(function () {
-            $(".bin p").css("left", "-180px");
+            $(".bin p").css("left", "-210px");
         }, 1);
     });
 });
@@ -322,11 +315,11 @@ $(document).ready(function () {
 function hideAllOps() {
     $(".search, .create, .uploads").css("top", "-38px");
     $(".iconSearch, .iconCreateFile, .iconCreateDir, .iconUpload").css("background", "");
+    hideUploadResult();
 }
 
 function selectAllItems() {
     checkboxes = [];
-    let currDir = $(".currDir .cdText").text().trim();
 
     $(".feTable tr").each(function () {
         let iconLink = $(this).find("td:eq(1) img").attr("src");
@@ -453,7 +446,7 @@ function deleteBatch() {
     });
 }
 
-function uploadFile(currDir, files, customName, replaceType) {
+function uploadFile(files, customName, replaceType) {
     let file = files[0];
     if (files.length == 0) {
         displayUploadResult("./assets/images/cross.png", "Error: Please select a file then press upload.", colorError);
@@ -806,8 +799,6 @@ function renameFile() {
     $('.btnRename').css({ "opacity": ".7", "pointer-events": "none" });
     $('.btnRename').val("Renaming...");
 
-    let currDir = $(".currDir .cdText").text().trim();
-
     let oldName = $("#oldName").val().trim();
     let rename = currDir + "/" + $("#rename").val().trim();
 
@@ -890,23 +881,25 @@ function getAndDisplayFileList(viewStyle) {
     request.done(function (response) {
         // console.log(response);
         if (response.status == "success") {
+            // console.log(response);
+
             fileList = response.files;
             totalSelectableItems = getSelectableItemsNumber();
             displayFileList(fileList, viewStyle);
 
-            // setting up current dir/'you are here' text
-            $(".cdText").text("/" + response.currDir);
+            // setting up global variable [currDir like: /root/folder/another/folder]
+            currDir = response.currDir;
 
-            // let dirTree = response.currDir.split("/");
+            // setting up current dir/'you are here' text on html page
+            let dirTree = response.currDir.split("/");
+            let youAreHere = "";
+            for (let i = 0; i < dirTree.length; i++) {
+                youAreHere += '<span class="dirTree">' + dirTree[i] + '</span>';
+                if (i != dirTree.length - 1) youAreHere += '<span class="dirArrow"> > </span>';
+            }
 
-            // let yah = "";
-            // for (let i = 0; i < dirTree.length; i++) {
-            //     yah += '<span class="dirTree">' + dirTree[i] + '</span>';
-            //     if (i != dirTree.length - 1) yah += '<span class="dirArrow"> > </span>';
-            // }
-
-            // $(".cdText").empty();
-            // $(".cdText").append(yah);
+            $(".cdText").empty();
+            $(".cdText").append(youAreHere);
         } else {
             $(".content").append('<p style="text-align: center;">' + response.message + '</p>');
         }
@@ -930,7 +923,6 @@ function displayFileList(list, viewStyle) {
 
     // taking care of selected checkboxes [useful in toggling list/grid]
     if (checkboxes.length > 0) {
-        let currDir = $(".currDir .cdText").text().trim();
         $(".checkboxSingle").each(function () {
             let fileName = $(this).parent().parent().find(".fileName").text().trim();
             let filePath = currDir + "/" + fileName;
