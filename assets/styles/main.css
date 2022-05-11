@@ -339,7 +339,7 @@ body {
 
 .bin p {
   position: fixed;
-  left: -180px;
+  left: -210px;
   bottom: 100px;
   transition: all 0.3s;
   padding: 5px;
@@ -367,18 +367,12 @@ body {
 
 .dirTree:hover {
   background: #ecf0f8;
-  /* text-decoration: underline; */
 }
 
 .dirArrow {
   display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
   font-family: FabricMDL2Icons;
   color: rgb(96, 94, 92);
-  font-size: 12px;
 }
 
 /* 'your are here' section end*/
