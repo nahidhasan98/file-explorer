@@ -315,7 +315,7 @@ $(document).ready(function () {
     $(".binSpan").on("click", function () {
         setTimeout(function () {
             $(".bin p").css("left", "-180px");
-        }, 100);
+        }, 1);
     });
 });
 
@@ -354,7 +354,7 @@ function createFileOrDir(formData) {
     // sending ajax post request
     let request = $.ajax({
         type: "POST",
-        url: "/create.php",
+        url: "create.php",
         data: formData,
         dataType: "json",
     });
@@ -389,7 +389,7 @@ function deleteFile(filePath) {
     // sending ajax post request
     let request = $.ajax({
         type: "POST",
-        url: "/delete.php",
+        url: "delete.php",
         data: JSON.stringify(data),
         dataType: "json",
     });
@@ -425,7 +425,7 @@ function deleteBatch() {
     // sending ajax post request
     let request = $.ajax({
         type: "POST",
-        url: "/delete.php",
+        url: "delete.php",
         data: JSON.stringify(data),
         dataType: "json",
     });
@@ -467,8 +467,8 @@ function uploadFile(currDir, files, customName, replaceType) {
     // first checking if file already exist or not
     let isExist = false, responseFileName;
     if (replaceType != "true") { // if replaceType is true, should replace(no need to check for existance)
-        let url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + file.name;;
-        if (customName != "") url = "/upload.php?todo=check&currDir=" + currDir + "&file=" + customName;
+        let url = "upload.php?todo=check&currDir=" + currDir + "&file=" + file.name;;
+        if (customName != "") url = "upload.php?todo=check&currDir=" + currDir + "&file=" + customName;
 
         $.ajax({
             async: false,
@@ -518,7 +518,7 @@ function uploadFile(currDir, files, customName, replaceType) {
         // sending ajax post request
         let request = $.ajax({
             type: "POST",
-            url: "/upload.php",
+            url: "upload.php",
             data: formData,
             dataType: "json",
             contentType: false,
@@ -570,7 +570,7 @@ function uploadFile(currDir, files, customName, replaceType) {
 }
 
 function downloadFile(filePath) {
-    let downloadURL = "/download.php?fileToDownload=" + encodeURIComponent(filePath);
+    let downloadURL = "download.php?fileToDownload=" + encodeURIComponent(filePath);
     window.location = downloadURL;
 }
 
@@ -579,8 +579,8 @@ function downloadBatch() {
         return encodeURIComponent(item);
     }).join(",");
 
-    let compressURL = "/download.php?fileToDownload=" + params + "&todo=compress";
-    let downloadURL = "/download.php?fileToDownload=" + params + "&todo=download";
+    let compressURL = "download.php?fileToDownload=" + params + "&todo=compress";
+    let downloadURL = "download.php?fileToDownload=" + params + "&todo=download";
     displayDownloadModal();
 
     $.ajax({
@@ -682,7 +682,7 @@ $.fn.setCursorPosition = function (pos) {
         }
     });
     return this;
-};
+}
 
 function getFinalDirIdx(table) {
     let tbody = table.find('tbody');
@@ -825,7 +825,7 @@ function renameFile() {
     // sending ajax post request
     let request = $.ajax({
         type: "POST",
-        url: "/rename.php",
+        url: "rename.php",
         data: formData,
         dataType: "json",
     });
@@ -878,8 +878,8 @@ function getAndDisplayFileList(viewStyle) {
     let urlParams = new URLSearchParams(queryString);
     let dir = urlParams.get('dir');
 
-    let apiURL = "/get-file-list.php";
-    if (dir != null) apiURL = "/get-file-list.php?dir=" + dir;
+    let apiURL = "get-file-list.php";
+    if (dir != null) apiURL = "get-file-list.php?dir=" + dir;
 
     // sending ajax GET request
     let request = $.ajax({
@@ -893,7 +893,20 @@ function getAndDisplayFileList(viewStyle) {
             fileList = response.files;
             totalSelectableItems = getSelectableItemsNumber();
             displayFileList(fileList, viewStyle);
+
+            // setting up current dir/'you are here' text
             $(".cdText").text("/" + response.currDir);
+
+            // let dirTree = response.currDir.split("/");
+
+            // let yah = "";
+            // for (let i = 0; i < dirTree.length; i++) {
+            //     yah += '<span class="dirTree">' + dirTree[i] + '</span>';
+            //     if (i != dirTree.length - 1) yah += '<span class="dirArrow"> > </span>';
+            // }
+
+            // $(".cdText").empty();
+            // $(".cdText").append(yah);
         } else {
             $(".content").append('<p style="text-align: center;">' + response.message + '</p>');
         }
@@ -1088,4 +1101,4 @@ function formatDateTime(unixTimestamp) {
     let date = d.getDate() + " " + month[d.getMonth()] + ", " + d.getFullYear();
     let time = d.toLocaleTimeString().toLowerCase();
     return { "time": time, "date": date };
-};
+}
