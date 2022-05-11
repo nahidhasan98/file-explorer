@@ -71,7 +71,7 @@
         <!-- You are here -->
         <div class="currDir">
             <span class="cdHeader">You are here:</span>
-            <span class="cdText">/</span>
+            <span class="cdText">root</span>
         </div>
 
         <!-- displaying files -->
