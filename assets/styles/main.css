@@ -361,12 +361,22 @@ body {
 
 /* current dir/'your are here' section */
 .dirTree {
+  color: #182641;
   padding: 5px 8px;
   cursor: pointer;
 }
 
 .dirTree:hover {
   background: #ecf0f8;
+}
+
+.dirTreeLastItem {
+  cursor: default;
+  font-weight: bold;
+}
+
+.dirTreeLastItem:hover {
+  background: none;
 }
 
 .dirArrow {

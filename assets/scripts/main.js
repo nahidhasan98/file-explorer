@@ -891,10 +891,20 @@ function getAndDisplayFileList(viewStyle) {
             currDir = response.currDir;
 
             // setting up current dir/'you are here' text on html page
-            let dirTree = response.currDir.split("/");
+            let dirTree = response.currDir.substr(1,).split("/");    // removing very first '/' - at index 0 and then split
             let youAreHere = "";
+            let link = "";
+
             for (let i = 0; i < dirTree.length; i++) {
-                youAreHere += '<span class="dirTree">' + dirTree[i] + '</span>';
+                if (i == 0) link = "index.php";
+                else if (i == 1) link += "?dir=" + dirTree[i];
+                else link += "/" + dirTree[i];
+
+                // dir
+                if (i != dirTree.length - 1) youAreHere += '<a href="' + link + '" class="dirTree">' + dirTree[i] + '</a>';
+                else youAreHere += '<span href="' + link + '" class="dirTree dirTreeLastItem">' + dirTree[i] + '</span>';
+
+                // arrow
                 if (i != dirTree.length - 1) youAreHere += '<span class="dirArrow"> > </span>';
             }
 
