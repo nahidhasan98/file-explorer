@@ -13,40 +13,18 @@
   <h1>Hello World!</h1>
 
   <p>This is the landing page of <strong>mydomain</strong>.</p>
-  <img src="./assets/images/search.png" alt="" srcset="" title="Search" class="">
 
   <?php
   include "./common.php";
+  include "./MyFile.php";
 
-  // echo "hello";
+  $files = scandir(rootDir . "/some folder/dir");
 
-  $file_to_search = "new";
+  foreach ($files as $file) {
+    $f = new MyFile("/root/some folder/dir/" . $file);
+    echo $f->name . " " . $f->filePath . "<br>";
 
-  search_file(rootDir, $file_to_search);
-
-
-  function search_file($dir, $file_to_search)
-  {
-
-    $files = scandir($dir);
-
-    foreach ($files as $key => $value) {
-
-      $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
-
-      if (!is_dir($path)) {
-        // if ($file_to_search == $value) {
-        $matched = preg_match("/" . $file_to_search . "/", $value);
-        if ($matched) {
-          echo "<br>file found<br>";
-          echo $path;
-          break;
-        }
-      } else if ($value != "." && $value != "..") {
-
-        search_file($path, $file_to_search);
-      }
-    }
+    echo "27 " . getDirLink($f) . "<br>";
   }
 
   ?>
